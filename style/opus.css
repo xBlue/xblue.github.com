@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+
+.content {
+	width:960px;
+	height:470px;
+	margin:50px auto;
+	border-radius:5px;
+	border:2px solid #fff;
+	}

@@ -1,0 +1,72 @@
+@charset "utf-8";
+/* CSS Document */
+*{margin:0; padding:0;font-family:"Comic Sans MS", cursive;}
+li{list-style:none;}
+a{text-decoration:none;color:#fff;}
+/*背景*/
+body{background:url(../img/bg.jpg) no-repeat;
+background-attachment:fixed; }
+
+/*导航背景*/
+.header{
+	height:80px; 
+	filter:progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr='#99000000', endColorstr='#99000000');background:rgba(0,0,0,0.6);
+	background:none\9;
+	}
+
+.nav{
+	width:960px;
+	height:80px;
+	margin:0 auto;
+	}
+
+/*  logo  */
+.logo{
+	width:200px; 
+	height:80px;
+	float:left;
+	font-size:12px;
+	position:relative;
+	}
+.logo p{ 
+		font-size:40px;
+		line-height:40px;
+		float:left;
+		color:#fff;
+		}
+.logo span{
+	float:left;
+	position:absolute;
+	font-size:12px;
+	top:45px;
+	left:100px;
+	color:#fff;
+	}
+
+
+/*-----------nav_ul-----------*/
+.nav_ul{
+	width:600px;
+	height:80px;
+	float:right;	
+	font-size:12px;
+	position:relative;
+	}
+.nav_ul li{
+	float:left;
+	width:100px;
+	height:80px;
+	text-align:center;
+	line-height:80px;
+	display:block;	
+	position:relative;
+	z-index:2;
+	}		
+.nav_ul li.box{
+	position:absolute;
+	left:0;
+	top:0;
+	background:blue;
+	z-index:1;	
+	}
+
