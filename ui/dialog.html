@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+
+.dialog {display:none;width:300px;height:150px;border:1px solid #000;padding:10px;font-family:"Microsoft Yahei"}
+.c {width:100%;height:30px;line-height:30px;background:#ccc;position:relative;cursor:move}
+.c .close {width:20px;height:20px;background:#f00;float:right;display:inline;cursor:pointer;margin:5px 5px 0 0}
+.c span {position:absolute;left:5px;top:0}
+.l {position:absolute;width:10px;height:100%;left:-5px;top:0;cursor:w-resize;z-index:1;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.r {position:absolute;width:10px;height:100%;right:-5px;top:0;cursor:e-resize;z-index:1;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.t {position:absolute;width:100%;height:10px;top:-5px;left:0;cursor:n-resize;z-index:1;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.b {position:absolute;width:100%;height:10px;bottom:-5px;left:0;cursor:s-resize;z-index:1;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.lt {position:absolute;width:10px;height:10px;left:-5px;top:-5px;z-index:2;cursor:nw-resize;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.rt {position:absolute;width:10px;height:10px;right:-5px;top:-5px;z-index:2;cursor:ne-resize;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.lb {position:absolute;width:10px;height:10px;left:-5px;bottom:-5px;z-index:2;cursor:sw-resize;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+.rb {position:absolute;width:10px;height:10px;right:-5px;bottom:-5px;z-index:2;cursor:se-resize;overflow:hidden;background:#fff;opacity:0;filter:alpha(opacity=0)}
+</style>
+</head>
+
+<body style="height:3000px">
+<input id="btn" type="button" value="弹出1">
+<input id="btn1" type="button" value="弹出2">
+<script>
+window.onload=function()
+{
+   var diaLog1=new Dialog({href:"#dialog"});
+   
+   var diaLog2=new Dialog({href:"#dialog1"});
+   
+   var oBtn=document.getElementById("btn");
+   
+   var oBtn1=document.getElementById("btn1");
+   
+   oBtn.onclick=function()
+   {
+      diaLog2.hide();
+      diaLog1.show();
+   }
+   
+   oBtn1.onclick=function()
+   {
+      diaLog1.hide();
+      diaLog2.show();
+   }
+}
+
+function addEvent(obj,sEv,fn)
+{
+  if(obj.attachEvent)
+  {
+    obj.attachEvent('on'+sEv,fn);
+  }
+  else
+  {
+    obj.addEventListener(sEv,fn,false);
+  }
+}
+
+function getByClass(oParent,sClass)
+{
+  var aResult=[];
+  
+  var aEle=oParent.getElementsByTagName("*");
+  
+  var re=new RegExp('\\b'+sClass+'\\b');
+  
+  for (var i=0;i<aEle.length;i++)
+  {
+    if(re.test(aEle[i].className))
+	{
+	  aResult.push(aEle[i]);
+	}
+  }
+  return aResult;
+}
+
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+function getStyle(obj,attr)
+{
+  if(obj.currentStyle)
+  {
+    return obj.currentStyle[attr];
+  }
+  else
+  {
+    return getComputedStyle(obj,false)[attr];
+  }
+}
+
+var btn=true;
+
+function Dialog(json)
+{  
+   var _this=this;
+
+   this.id=json.href.substring(1);
+   
+   this.btn=true;
+   
+   this.oDiv=document.getElementById(this.id);
+   
+   this.width=parseInt(getStyle(this.oDiv,"width"));
+   
+   this.height=parseInt(getStyle(this.oDiv,"height"));
+   
+   this.titleText=this.oDiv.title;
+
+   //初始化方法	     
+   this.createEle();
+	
+   this.setDrag();
+
+   this.oClose.onclick=function()
+   {
+     _this.hide();
+   }
+}
+
+//创建元素
+Dialog.prototype.createEle=function()
+{
+   this.title=document.createElement("div");
+   this.title.className="c";
+   this.title.innerHTML=
+   '<span></span>'+
+   '<div class="close"></div>';
+   
+   this.oText=this.title.children[0];
+   this.oText.innerHTML=this.titleText;
+   this.oClose=this.title.children[1];
+   this.oDiv.insertBefore(this.title,this.oDiv.children[0]);
+   
+   this.l=document.createElement("div");
+   this.r=document.createElement("div");
+   this.t=document.createElement("div");
+   this.b=document.createElement("div");
+   this.lt=document.createElement("div");
+   this.rt=document.createElement("div");
+   this.lb=document.createElement("div");
+   this.rb=document.createElement("div");
+
+   this.l.className="l";
+   this.r.className="r";
+   this.t.className="t";
+   this.b.className="b";
+   this.lt.className="lt";
+   this.rt.className="rt";
+   this.lb.className="lb";
+   this.rb.className="rb";
+   
+   this.oDiv.appendChild(this.l);
+   this.oDiv.appendChild(this.r);
+   this.oDiv.appendChild(this.t);
+   this.oDiv.appendChild(this.b);
+   this.oDiv.appendChild(this.lt);
+   this.oDiv.appendChild(this.rt);
+   this.oDiv.appendChild(this.lb);
+   this.oDiv.appendChild(this.rb);
+
+}
+
+//显示
+Dialog.prototype.show=function()
+{
+  var _this=this;
+  
+  if(this.btn)
+  {
+      this.btn=false;
+  
+	  this.oDiv.style.display='block';
+	  
+	  this.setWrap();
+	  
+	  addEvent(window,'resize',function(){
+	  
+		_this.setWrap();
+		
+	  });
+  }
+}
+
+//关闭
+Dialog.prototype.hide=function()
+{ 
+   this.oDiv.style.display='none';
+	 
+   this.btn=true;
+}
+
+//设置容器样式
+Dialog.prototype.setWrap=function()
+{  
+   setStyle(this.oDiv,{
+     position:'absolute',
+	 zIndex:2000,
+	 left:(document.documentElement.clientWidth-this.oDiv.offsetWidth)/2+'px',
+	 top:(document.documentElement.clientHeight-this.oDiv.offsetHeight)/2+'px'
+   })
+}
+
+//拖拽
+Dialog.prototype.setDrag=function()
+{
+   var _this=this;
+
+   for (var i=0;i<this.oDiv.children.length;i++)
+   {
+     if(this.oDiv.children[i].tagName=="P")continue;
+	 
+	 this.oDiv.children[i].onmousedown=function(ev)
+	 {
+	    _this.fnDown(ev,this);
+		return false;
+	 }
+   }
+}
+
+//down
+Dialog.prototype.fnDown=function(ev,oThis)
+{
+   var _this=this;
+
+   var oEvent=ev||event;
+   
+   if(oThis.className.indexOf("c")!=-1)
+   {
+     this.disX=oEvent.clientX-this.oDiv.offsetLeft;
+	 this.disY=oEvent.clientY-this.oDiv.offsetTop;
+   }
+   
+   if(oThis.className.indexOf("l")!=-1)
+   { 
+     this.downX=oEvent.clientX;
+	 this.downWidth=this.oDiv.offsetWidth;
+	 this.downLeft=this.oDiv.offsetLeft 
+   }
+   if(oThis.className.indexOf("r")!=-1)
+   { 
+     this.disX=oEvent.clientX-oThis.offsetLeft;
+   }
+   if(oThis.className.indexOf("t")!=-1)
+   {
+     this.downY=oEvent.clientY;
+	 this.downHeight=this.oDiv.offsetHeight;
+	 this.downTop=this.oDiv.offsetTop
+   }
+   if(oThis.className.indexOf("b")!=-1)
+   { 
+     this.disY=oEvent.clientY-oThis.offsetTop;
+   }
+   
+   if(oThis.setCapture)
+   { 
+     oThis.onmousemove=function(ev)
+	 {
+	    _this.fnMove(ev,this); 
+	 };
+	 
+	 oThis.onmouseup=function()
+	 {  
+	    _this.fnUp(this);
+	 };
+	 
+     oThis.setCapture();
+   }
+   else
+   { 
+     document.onmousemove=function(ev)
+	 {  
+	    _this.fnMove(ev,oThis); 
+	 };
+	 
+	 document.onmouseup=function()
+	 {
+	    _this.fnUp(this);
+	 }
+   }
+   
+   
+}
+
+//move
+Dialog.prototype.fnMove=function(ev,oThis)
+{
+   var oEvent=ev||event;
+   
+   var pl=parseInt(getStyle(this.oDiv,"paddingLeft"));
+   
+   var pr=parseInt(getStyle(this.oDiv,"paddingRight"));
+   
+   var pt=parseInt(getStyle(this.oDiv,"paddingTop"));
+   
+   var pb=parseInt(getStyle(this.oDiv,"paddingBottom"));
+  
+   var _this=this;
+   
+   if(oThis.className.indexOf("c")!=-1)
+   {
+      this.x=oEvent.clientX-this.disX;
+	  this.y=oEvent.clientY-this.disY;
+	  
+	  this.oDiv.style.left=this.x+'px';
+	  this.oDiv.style.top=this.y+'px';
+   }
+   
+   if(oThis.className.indexOf("l")!=-1)
+   { 
+      this._downX=oEvent.clientX-this.downX;
+	  
+	  if(this._downX>=this.downWidth-this.width)this._downX=this.downWidth-this.width;
+	  
+	  this.newWidth=this.downWidth-this._downX;
+	  if(this.newWidth<=this.width)this.newWidth=this.width;
+	  
+	  this.newLeft=this.downLeft+this._downX;
+	  
+	  this.oDiv.style.width=this.newWidth+'px';
+	  this.oDiv.style.left=this.newLeft+'px';
+	   
+   }
+   if(oThis.className.indexOf("r")!=-1)
+   { 
+     this.x=oEvent.clientX-this.disX+oThis.offsetWidth-(pl+pr);
+	 
+	 if(this.x<=this.width)this.x=this.width;
+	 
+	 this.oDiv.style.width=this.x+'px';
+   }
+   if(oThis.className.indexOf("t")!=-1)
+   {
+      this._downY=oEvent.clientY-this.downY;
+	  if(this._downY>=this.downHeight-this.height)this._downY=this.downHeight-this.height;
+	  
+	  this.newHeight=this.downHeight-this._downY;
+	  if(this.newHeight<=this.height)this.newHeight=this.height;
+	  
+	  this.newTop=this.downTop+this._downY;
+	  
+	  this.oDiv.style.height=this.newHeight+'px';
+	  this.oDiv.style.top=this.newTop+'px';
+   }
+   if(oThis.className.indexOf("b")!=-1)
+   {
+     this.y=oEvent.clientY-this.disY+oThis.offsetHeight-(pt+pb);
+	 
+	 if(this.y<=this.height)this.y=this.height;
+	 
+	 this.oDiv.style.height=this.y+'px';
+   }
+}
+
+//up
+Dialog.prototype.fnUp=function(oThis)
+{ 
+  oThis.onmousemove=null;
+  oThis.onmouseup=null;
+  if(oThis.releaseCapture)
+  {
+    oThis.releaseCapture();
+  }
+}
+
+</script>
+
+<div id="dialog" title="Basic dialog" class="dialog">
+<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+
+
+<div id="dialog1" title="Basic dialog111111111111" class="dialog">
+<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>zns</title>
+<link rel="stylesheet" type="text/css" href="style/global.css">
+<link rel="stylesheet" type="text/css" href="style/layout.css">
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript" src="script/base.js"></script>
+<script type="text/javascript" src="script/banner.js"></script>
+<script type="text/javascript" src="script/news.js"></script>
+</head>
+<body>
+
+<!-- head -->
+<div id="head" class="clearfix">
+  <div class="head_inner">
+    <h2>智能社是一家专注于web前端开发技术的专业培训机构，现推出“HTML5”、“JavaScript”和“HTML+CSS”三套课程</h2>
+    <ul>
+      <li class="l"><a href="javascript:void(0)" onfocus="this.blur()">登录</a></li>
+      <li class="r">
+        <a href="javascript:void(0)" onfocus="this.blur()">关注我们</a>
+        <div class="focus">
+          <ul>
+            <li class="first">新浪微博</li>
+            <li>zns</li>
+            <li>新浪微博</li>
+            <li>新浪微博</li>
+            <li>新浪微博</li>
+            <li class="last">新浪微博</li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div id="zns">
+<div id="main">
+  <!-- top -->
+  <div id="top" class="clearfix">
+    <!-- logo -->
+    <h1 id="logo"><a href="javascript:void(0)">zns</a></h1>
+    <!-- nav -->
+    <div id="nav">
+      <ul class="clearfix">
+        <div id="cover"></div>
+        <li><a href="index.html" onfocus="this.blur()">首页</a></li>
+        <li><a href="javascript:void(0)" onfocus="this.blur()">js课程</a></li>
+        <li><a href="javascript:void(0)" onfocus="this.blur()">html5课程</a></li>
+        <li><a href="javascript:void(0)" onfocus="this.blur()">视屏教程</a></li>
+        <li><a href="javascript:void(0)" onfocus="this.blur()">课程案例</a></li>
+        <li><a href="javascript:void(0)" onfocus="this.blur()">联系方式</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- banner -->
+  <div id="banner">
+    <div class="btn_wrap">
+      <div class="left_btn">
+         <a href="javascript:void(0)">左</a>
+         <a href="javascript:void(0)" class="active">左</a>
+      </div>
+      <div class="right_btn">
+         <a href="javascript:void(0)">右</a>
+         <a href="javascript:void(0)" class="active">右</a>
+      </div>
+    </div>
+    <div class="roll_wrap">
+      <ul>
+        <li style="left:0"><a href="javascript:void(0)"><img src="images/1.png" width="840" height="305" alt="zns"></a></li>
+        <li><a href="javascript:void(0)"><img src="images/2.png" width="840" height="305" alt="zns"></a></li>
+        <li><a href="javascript:void(0)"><img src="images/3.png" width="840" height="305" alt="zns"></a></li>
+        <li><a href="javascript:void(0)"><img src="images/4.png" width="840" height="305" alt="zns"></a></li>
+        <li><a href="javascript:void(0)"><img src="images/5.png" width="840" height="305" alt="zns"></a></li>
+      </ul>
+    </div>
+    <div class="dot_wrap">
+      <ul>
+        <li>
+          <a href="javascript:void(0)" onfocus="this.blur()" class="mark">1</a>
+          <a href="javascript:void(0)" onfocus="this.blur()" class="active" style="opacity:1;filter:alpha(opacity=100)">1</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" onfocus="this.blur()">2</a>
+          <a href="javascript:void(0)" onfocus="this.blur()" class="active">2</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" onfocus="this.blur()">3</a>
+          <a href="javascript:void(0)" onfocus="this.blur()" class="active">3</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" onfocus="this.blur()">4</a>
+          <a href="javascript:void(0)" onfocus="this.blur()" class="active">4</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" onfocus="this.blur()">5</a>
+          <a href="javascript:void(0)" onfocus="this.blur()" class="active">5</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- bottom -->
+  <div id="bottom_content" class="clearfix">
+    <div id="left_news">
+      <h3>
+        <span>新闻</span>
+        <a class="prev_active" href="javascript:void(0)" onfocus="this.blur()">前</a>
+        <a class="next" href="javascript:void(0)" onfocus="this.blur()">后</a>
+      </h3>
+      <ul>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+            <a href=""><span class="left"></span><span class="right"></span></a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    
+    <div id="right_add">
+      <h3>热门课程</h3>
+      <h4><a href="javascript:void(0)">更多>></a></h4>
+      <ul>
+        <li>
+          <dl>
+            <dt><a href="javascript:void(0)" onfocus="this.blur()"><img src="images/js.jpg" width="95" height="94" alt="js"></a></dt>
+            <dd>
+              <p>精通JavaScript 2.0课程</p>
+              <p>(适合具备XHTML+CSS基础的朋友)</p>
+            </dd>
+          </dl>
+        </li>
+        <li>
+          <dl>
+            <dt><a href="javascript:void(0)" onfocus="this.blur()"><img src="images/html5.jpg" width="95" height="94" alt="html5"></a></dt>
+            <dd>
+              <p>HTML5+CSS3开发课程</p>
+              <p>(适合具备CSS和JS基础的朋友)</p>
+            </dd>
+          </dl>
+        </li>
+        <li>
+          <dl>
+            <dt><a href="javascript:void(0)" onfocus="this.blur()"><img src="images/css.jpg" width="95" height="94" alt="css"></a></dt>
+            <dd>
+              <p>精通HTML+CSS开发课程</p>
+              <p>(从零开始，适合初学前端的朋友)</p>
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- footer -->
+  <div id="footer">
+    <a href="javascript:void(0)">JavaScript课程</a>
+    <a href="javascript:void(0)">HTML5课程</a>
+    <a href="javascript:void(0)">HTML+CSS课程</a>
+    <a href="javascript:void(0)">视频教程</a>
+    <a href="javascript:void(0)">课程案例</a>
+    <a href="javascript:void(0)">联系方式</a>
+    <a href="javascript:void(0)">京ICP备12022017号-1</a>
+  </div>
+</div>
+</div>
+
+<!-- other -->
+<div id="fast_nav">
+  <div class="close"></div>
+  <img src="img/fast_nav.png" alt="快速导航" width="72" height="72" style="position:relative;z-index:30">
+  <div class="out_lt outer">
+    <div class="lt_o inner"></div>
+  </div>
+  <div class="out_rt outer">
+    <div class="rt_o inner"></div>
+  </div>
+  <div class="out_rb outer">
+    <div class="rb_o inner"></div> 
+  </div>
+  <div class="out_lb outer">
+    <div class="lb_o inner"></div>
+  </div>
+</div>
+
+<!-- qq -->
+<div id="qq"></div>
+
+<!-- back_top -->
+<div id="backTop">
+  <a href="javascript:void(0)" onfocus="this.blur()">返回顶部</a>
+</div>
+
+<!-- loginbox -->
+<div id="login_box">
+  <a id="close_btn" href="javascript:void(0)">关闭</a>
+  <div id="login">
+     <div class="head"></div>
+     <div class="line1"></div>
+     <div class="input_area">
+       <ul>
+         <li><span>邮箱</span><input type="text"></li>
+         <li class="border_none"><span>密码</span><input type="text"></li>
+       </ul>
+     </div>
+     <div class="btn_area"><a href="javascript:void(0)">登录</a></div>
+     <div class="text">
+       <a href="javascript:void(0)">忘记密码?</a>
+       <a href="javascript:void(0)" id="num_regist">账号注册</a>
+     </div>
+     <div class="line2"></div>
+     <div class="line2"></div>
+  </div>
+  <div id="regist">
+     <div class="head"></div>
+     <div class="line1"></div>
+     <div class="input_area">
+       <ul>
+         <li><span>邮箱</span><input type="text"></li>
+         <li class="border_none"><span>密码</span><input type="text"></li>
+       </ul>
+     </div>
+     <div class="btn_area"><a href="javascript:void(0)">登录</a></div>
+     <div class="text">
+       <a href="javascript:void(0)"></a>
+       <a href="javascript:void(0)" id="num_back">返回</a>
+     </div>
+     <div class="line2"></div>
+     <div class="line2"></div>
+  </div>
+</div>
+
+<!-- shadow -->
+<div id="shadow"></div>
+
+<script>
+n=0;
+</script>
+</body>
+</html>

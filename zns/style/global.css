@@ -1,0 +1,92 @@
+@charset "utf-8"/  html, body {
+height:100%
+}
+body { font:12px/22px "Microsoft Yahei"; color:#000; padding:0; margin:0; position:relative; background-image:url(about:blank); background-attachment:fixed; font-size:12px;background:url(../img/bodyBg.jpg) no-repeat center top #000;overflow-x:hidden}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p { margin:0; padding:0; }
+input { outline:none }
+select { vertical-align:middle; }
+li { list-style-type:none; }
+h1, h2 { font-size:0px; }
+h3, h4, h5, h6 { font-size:12px; }
+h1, h2, h3, h4, h5, h6 { font-weight:normal; }
+blockquote, q { quotes:none; }
+blockquote:before, blockquote:after, q:before, q:after { content:''; content:none; }
+.clear { clear:both; }
+a { color:#000099; text-decoration:none; }
+a:hover { color:#000099; text-decoration:none; }
+a:active { color:#7a8da0; text-decoration:underline; }
+.disable { display: none; }
+.normal { font-weight:normal }
+.p_l36 { padding-left:36px }
+.p_r10 { padding-right:10px }
+a img { border:none; }
+.b { font-weight:bold; }
+.font_9 { font-size:9px; }
+.font_12 { font-size:12px; }
+.font_14 { font-size:14px; }
+.font_16 { font-size:16px; }
+.font_18 { font-size:18px; }
+.font_20 { font-size:20px; }
+.font_24 { font-size:24px; }
+.font_25 { font-size:25px; }
+.font_26 { font-size:26px; }
+.font_27 { font-size:27px; }
+.font_28 { font-size:28px; }
+.font_29 { font-size:29px; }
+.font_30 { font-size:30px; }
+.font_40 { font-size:30px; }
+.tips li { list-style-type:decimal; list-style-position:outside; margin:8px 0 0 30px; line-height:18px; }
+.gray_frame { border:1px solid #c5c5c5; padding:1px; }
+.coffee_frame { border:1px solid #999; padding:1px; }
+.inputface, .inputclass { border:1px solid #d3d3d3; font-size:12px; color:#727272; height:22px; line-height:22px; vertical-align:middle; }
+.solid_line { border-bottom:1px #ccc solid; height:1px; line-height:1px; margin:1px 0; }
+.dashed_line { border-bottom:1px #ccc dashed; height:1px; line-height:1px; margin:1px 0; }
+.left { float:left; }
+.right { float:right; }
+.center { text-align:center; }
+.block { display:block; }
+.yahei { font-family:Microsoft YaHei, calibri, verdana; }
+.roman { font-family:"Times New Roman", Times, serif }
+.hidden { visibility:hidden; }
+.mgbot18px { margin-bottom:18px; }
+.none { display:none; }
+.pd20px { padding:16px 0; }
+.pdtop20px { padding-top:20px; }
+.wrong { color:#f00; margin-left:10px }
+.wrong img { position:relative; top:-1px; margin-right:5px; vertical-align:middle }
+.red { color:#da0010; }
+.red a { color:#da0010; text-decoration:none; }
+.red a:hover { color:#da0010; text-decoration:underline; }
+.white { color:#fff; }
+.black { color:#4d4d4d; }
+.coffee { color:#333; }
+.orange { color:#ff6600; }
+.orange1 { color:#e3a000; }
+.blue { color:#009bdf; }
+.green_1 { color:#07a5a6 }
+.green_2 { color:#049698 }
+.green_3 { color:#06a2a3 }
+.green_4 { color:#049697 }
+.green_5 { color:#43b0b0 }
+.green_6 { color:#049596 }
+.green_7 { color:#069fa0 }
+.gray { color:#808080 }
+.gray_1 { color:#e8ebeb }
+.gray_2 { color:#aaa }
+.gray_3 { color:#939393 }
+.gray_4 { color:#7f7f7f }
+.gray_5 { color:#a0b9b9 }
+.gray_6 { color:#666 }
+.gray_7 { color:#a5a5a5 }
+.gray_8 { color:#737373 }
+.gold { color:#FFCC00 }
+.blue { color:#039D9F }
+.font_song { font-family:"宋体" }
+.font_arial { font-family:Arial, Helvetica, sans-serif }
+.bluer { color:#007bc7 }
+.grayer { color:#7a7a7a }
+.m_l_28 { margin-left:28px }
+.gold { color:#fabf2e }
+.clearfix { zoom:1 }
+.clearfix:after { clear: both; content: "."; display: block; height: 0; overflow: hidden; visibility: hidden; }
+.STYLE1 { font-size: 36px; font-family: "方正综艺简体"; }

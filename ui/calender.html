@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+.rili {position:absolute;left:100px;top:50px;border:1px solid #000099;color:#000}
+
+.calender {width:210px;border:1px solid #000;position:absolute}
+.calender .head {text-align:center;position:relative}
+.calender .head .left,.calender .head .right {cursor:pointer;width:20px;height:20px;line-height:20px;text-align:center;position:absolute}
+.calender .head .left {left:0;top:5px}
+.calender .head .right {right:0;top:5px}
+.calender .head ol li {width:30px;height:30px;line-height:30px;text-align:center;float:left}
+.calender  ul li  {width:30px;height:30px;line-height:30px;text-align:center;float:left}
+.calender  ul li.today {background:#f00;cursor:pointer}
+.calender  ul li.now {cursor:pointer}
+.calender  ul li.prev {cursor:default}
+.calender  ul li.next {cursor:default}
+</style>
+</head>
+
+<body>
+  <label>起始日期</label><input type="text" id="start">
+  <label>结束日期</label><input type="text" id="end">
+  (日期格式如2013-4-5)
+  <input type="button" id="set" value="确定设置">
+  
+  <input type="text" class="rili" name="rili">
+  
+
+<script>
+window.onload=function()
+{
+  var oInput=document.getElementsByName("rili")[0];
+  
+  var cal=new Calender(oInput);
+  
+  var oStart=document.getElementById("start");
+  
+  var oEnd=document.getElementById("end");
+  
+  var oSet=document.getElementById("set");
+  
+  //设置时间
+
+  cal.start=oStart.value;
+  cal.end=oEnd.value;
+  
+  oSet.onclick=function()
+  {
+     cal.start=oStart.value;
+     cal.end=oEnd.value;
+  }
+
+}
+</script>
+  
+<script>
+function getXY(obj)
+{
+  var x=0;
+  var y=0;
+  while(obj)
+  {
+    x+=obj.offsetLeft;
+	y+=obj.offsetTop;
+	obj=obj.offsetParent
+  }
+  
+  return {left:x,top:y}
+}
+
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+(function(){
+
+  window.Calender=function(obj)
+  {
+     this.oInput=obj;
+  
+     this.left=getXY(obj).left;
+	 
+	 this.top=getXY(obj).top+obj.offsetHeight+2;
+	 
+	 this.oDiv=document.createElement("div");
+	 
+	 this.oDiv.className="calender";
+	 
+	 this.iNow=0;
+	 
+	 this.start="";
+	 
+	 this.end="";
+	 
+	 this.oDiv.innerHTML=
+	 '<div class="head">'+
+	   '<span></span>'+
+	   '<div class="left">←</div>'+
+	   '<div class="right">→</div>'+
+	   '<ol>'+
+	     '<li>日</li>'+
+		 '<li>一</li>'+
+		 '<li>二</li>'+
+		 '<li>三</li>'+
+		 '<li>四</li>'+
+		 '<li>五</li>'+
+		 '<li>六</li>'+
+	   '</ol>'+
+	 '</div>'+
+	 '<ul></ul>';
+	 
+	 //初始化样式
+	 setStyle(this.oDiv,{left:this.left+'px',top:this.top+'px'});
+	 
+	 //选取元素
+	 this.oSpan=this.oDiv.children[0].children[0];
+	 
+	 this.oLeft=this.oDiv.children[0].children[1];
+	 
+	 this.oRight=this.oDiv.children[0].children[2];
+	 
+	 this.oUl=this.oDiv.children[1];
+	 
+	 this._fresh();
+	 
+	 this._prev();
+	 
+	 this._next();
+
+	 document.body.appendChild(this.oDiv);
+	 
+  }
+  
+  //点击选择上个月
+  Calender.prototype._prev=function()
+  {
+     var _this=this;
+	 
+	 this.oLeft.onclick=function()
+	 { 
+	   _this.iNow--;
+	   
+	   _this._fresh();
+	 }
+  }
+  
+  //点击选择下个月
+  Calender.prototype._next=function()
+  {
+     var _this=this;
+  
+     this.oRight.onclick=function()
+	 {
+	   _this.iNow++;
+	   
+	   _this._fresh();
+	 }
+  }
+  
+  //刷新
+  Calender.prototype._fresh=function()
+  {
+     this.oUl.innerHTML="";
+  
+	 var nowMonth=this._nowMonth();
+	 
+	 this.oSpan.innerHTML=nowMonth;
+	 
+	 this._prevDay();
+	 
+	 this._nowDay(); 
+	 
+	 this._nextDay();
+	 
+	 this._click();
+  }
+  
+  //点击选择日期
+  Calender.prototype._click=function()
+  {
+     var oFull=this._nowDate().full;
+	 
+	 var _this=this;
+  
+     for (var i=0;i<this.oUl.children.length;i++)
+	 {
+	    if(this.oUl.children[i].innerHTML!="")
+		{
+		   this.oUl.children[i].onclick=function()
+		   {   
+		       if(_this.start!=""&&_this.end!="")
+			   {
+				   //当前时间戳
+				   var now=(oFull+this.innerHTML).split('-');
+				   var oDateNow=new Date(now[0],now[1],now[2]);
+				   oDateNow.setMonth(oDateNow.getMonth()-1);
+				   var nowTime=oDateNow.getTime();
+				   
+				   //起始时间戳
+				   var start=_this.start.split("-");
+				   var oDateStart=new Date(start[0],start[1],start[2]);
+				   oDateStart.setMonth(oDateStart.getMonth()-1);
+				   var startTime=oDateStart.getTime();
+				   
+				   //结束时间戳
+				   var end=_this.end.split("-");
+				   var oDateEnd=new Date(end[0],end[1],end[2]);
+				   oDateEnd.setMonth(oDateEnd.getMonth()-1);
+				   var endTime=oDateEnd.getTime();
+				   
+				   if(nowTime>=startTime&&nowTime<=endTime)
+				   {
+					  _this.oInput.value=oFull+this.innerHTML;
+				   }
+				   else
+				   {
+					  alert('请在规定时间内选择');
+				   }   
+			   }
+			   else
+			   {
+			      alert('请先选择日期范围');
+			   }
+
+		      
+		   }
+		}
+	 } 
+  }
+  
+  //上个月的天数
+  Calender.prototype._prevDay=function()
+  {
+     var first=this._firstday();
+	 
+	 for (var i=0;i<=first;i++)
+	 {
+	    var oLi=document.createElement("li");
+		
+		oLi.className="prev";
+		
+		this.oUl.appendChild(oLi);
+	 }
+  }
+  
+  //这个月的天数
+  Calender.prototype._nowDay=function()
+  {
+     var num=this._howday();
+	 
+	 var nowDate=this._nowDate().date;
+	 
+	 for (var i=0;i<num;i++)
+	 {
+	   var oLi=document.createElement("li");
+	   
+	   oLi.className="now";
+	   
+	   oLi.innerHTML=i+1;
+	   
+	   if(this.iNow==0&&(i+1)==nowDate)
+	   {
+	     oLi.className="today";
+	   }
+	   
+	   this.oUl.appendChild(oLi);
+	   
+	 } 
+  }
+  
+  //下个月的天数
+  Calender.prototype._nextDay=function()
+  {
+     while(this.oUl.children.length<42)
+	 {
+	   var oLi=document.createElement("li");
+	   
+	   oLi.className="next";
+	   
+	   this.oUl.appendChild(oLi);
+	 }
+  }
+  
+  //一共有多少天
+  Calender.prototype._howday=function()
+  {
+     var oDate=new Date();
+	 
+	 oDate.setMonth(oDate.getMonth()+this.iNow+1);
+	 
+	 oDate.setDate(0);
+	 
+	 return oDate.getDate();
+  }
+  
+  //这个月的第一天
+  Calender.prototype._firstday=function()
+  {
+    var oDate=new Date();
+	
+	oDate.setMonth(oDate.getMonth()+this.iNow);
+	
+	oDate.setDate(0);
+	
+	return oDate.getDay();
+  }
+  
+  //这个月2013-x
+  Calender.prototype._nowMonth=function()
+  {
+     var oDate=new Date();
+	 
+	 oDate.setMonth(oDate.getMonth()+this.iNow);
+	 
+	 return oDate.getFullYear()+'-'+(oDate.getMonth()+1);
+  }
+  
+  //今天是几号
+   Calender.prototype._nowDate=function()
+   {
+     var oDate=new Date();
+	 
+	 oDate.setMonth(oDate.getMonth()+this.iNow);
+	 
+	 return {date:oDate.getDate(),full:oDate.getFullYear()+'-'+(oDate.getMonth()+1)+'-'}
+  }
+
+})()
+</script>
+</body>
+</html>

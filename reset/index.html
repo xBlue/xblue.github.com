@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>新华网两会新闻效果</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+body {background:#000;overflow:hidden}
+html,body {height:100%;width:100%}
+
+
+#list {width:800px;height:200px;position:absolute;margin:-100px 0 0 -400px;left:50%;top:50%}
+#list ul {width:800px;height:200px;clear:both;zoom:1;position:relative}
+#list ul li {float:left}
+#list .block1 {width:250px;height:200px}
+#list .block2 {width:150px;height:200px}
+#list .block3 {width:300px;height:200px}
+#list .block4 {width:100px;height:200px}
+
+#list .style1 {height:40px;background:#CC3300;margin-bottom:2px;width:250px}
+#list .style2 {height:116px;background:#CC0066;width:250px}
+#list .style3 {height:200px;background:#0000FF;width:148px;margin-left:2px}
+#list .style4 {width:148px;margin:0 0 2px 2px;background:#FFCC00;height:99px;float:left;display:inline}
+#list .style5 {width:48px;margin:0 0 2px 2px;background:#CCFF33;height:48px;float:left;display:inline}
+</style>
+<script type="text/javascript" src="move.js"></script>
+</head>
+
+<body sroll="no">
+<input id="btn" value="重排" type="button" style="width:200px;height:200px">
+<div id="list">
+  <ul>
+    <li class="block1">
+      <div class="style1"></div>
+      <div class="style1"></div>
+      <div class="style2"></div>
+    </li>
+    <li class="block2">
+      <div class="style3"></div>
+    </li>
+    <li class="block3">
+      <div class="style4" style="width:48px"></div>
+      <div class="style4" style="width:248px"></div>
+      <div class="style4" style="width:108px"></div>
+      <div class="style4" style="width:188px"></div>
+    </li>
+    <li class="block4">
+      <div class="style5"></div>
+      <div class="style5"></div>
+      <div class="style5" style="padding-bottom:1px"></div>
+      <div class="style5" style="padding-bottom:1px"></div>
+      <div class="style5"></div>
+      <div class="style5"></div>
+      <div class="style5" style="margin-bottom:0"></div>
+      <div class="style5" style="margin-bottom:0"></div>
+    </li>
+  </ul>
+</div>
+<script>
+window.onload=function()
+{
+   var oBtn=document.getElementById("btn");
+   
+   var oUl=document.getElementsByTagName('ul')[0];
+   
+   var aLi=document.getElementsByTagName('li');
+   
+   var aDiv=document.getElementById('list').getElementsByTagName('div');
+   
+   oBtn.onclick=function()
+   {
+      sorter(oUl,aLi,aDiv);
+   }
+}
+
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+function getXY(obj)
+{
+  var x=0;
+  var y=0;
+  
+  while(obj)
+  {
+    x+=obj.offsetLeft;
+	y+=obj.offsetTop;
+	obj=obj.offsetParent;
+  }
+  
+  return {left:x,top:y};
+}
+
+
+function sorter(oWrap,aWrap,aObj)
+{
+  for(var i=0;i<aObj.length;i++)
+  {   
+     setStyle(aObj[i],{position:'',left:'',top:'',margin:''});
+  }
+
+  var arrWrap=[];
+
+  for (var j=0;j<aWrap.length;j++)
+  {
+     arrWrap[j]=aWrap[j];
+  }
+  
+  arrWrap.sort(function(){
+  
+    return Math.random()-0.5;
+  
+  })
+  
+  for (var j=0;j<arrWrap.length;j++)
+  {
+     oWrap.appendChild(arrWrap[j]);
+  }
+
+  var aPos=[];
+
+  for (var i=0;i<aObj.length;i++)
+  {   
+     aPos[i]={left:getXY(aObj[i]).left-getXY(oWrap.parentNode).left,top:getXY(aObj[i]).top-getXY(oWrap.parentNode).top};
+  }
+
+  for (var i=0;i<aObj.length;i++)
+  {
+     setStyle(aObj[i],{left:aPos[i].left,top:aPos[i].top,position:'absolute',margin:'0'}) 
+  }
+  
+  for (var i=0;i<aObj.length;i++)
+  {  
+     var w_w=document.documentElement.clientWidth*(Math.random()*2-1);
+  
+     var w_h=document.documentElement.clientHeight*(Math.random()*2-1);
+     
+     setStyle(aObj[i],{left:w_w+'px',top:w_h+'px'});
+	 
+	 startMove(aObj[i],{left:aPos[i].left,top:aPos[i].top});  
+  }
+
+}
+</script>
+</body>
+</html>

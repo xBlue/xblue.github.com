@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+#drag {width:100px;height:100px;background:#000}
+</style>
+</head>
+
+<body style="height:3000px">
+<div id="drag"></div>
+<script>
+window.onload=function()
+{
+   var oDiv=document.getElementById("drag");
+   
+   var d1=new Drag(oDiv); 
+}
+
+
+
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+function Drag(obj)
+{ 
+  var _this=this;
+
+  this.oDiv=obj;
+  
+  //初始化样式
+  setStyle(this.oDiv,{position:'absolute'});
+  
+  this.oDiv.onmousedown=function(ev)
+  {
+     _this._fnDown(ev);
+	 return false;
+  }
+}
+
+Drag.prototype._fnDown=function(ev)
+{  
+   var _this=this;
+
+   var oEvent=ev||event;
+   
+   var scrollLeft=document.documentElement.scrollLeft||document.body.scrollLeft;
+   
+   var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+   
+   this.disX=oEvent.clientX-this.oDiv.offsetLeft+scrollLeft;
+   
+   this.disY=oEvent.clientY-this.oDiv.offsetTop+scrollTop;
+   
+   if(this.oDiv.setCapture)
+   {
+     this.oDiv.onmousemove=function(ev)
+	 {  
+	    _this._fnMove(ev);
+	 };
+	 
+	 this.oDiv.onmouseup=function()
+	 {
+	    _this._fnUp(this);
+	 };
+	 
+     this.oDiv.setCapture();
+   }
+   else
+   {
+     document.onmousemove=function(ev)
+	 {
+	    _this._fnMove(ev);
+	 };
+	 document.onmouseup=function()
+	 {
+	    _this._fnUp(this);
+	 };
+   } 
+}
+
+Drag.prototype._fnMove=function(ev)
+{ 
+  var oEvent=ev||event;
+  
+  var scrollLeft=document.documentElement.scrollLeft||document.body.scrollLeft;
+   
+  var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+  
+  var x=oEvent.clientX-this.disX+scrollLeft;
+  
+  var y=oEvent.clientY-this.disY+scrollTop;
+  
+  setStyle(this.oDiv,{left:x+'px',top:y+'px'});
+}
+
+Drag.prototype._fnUp=function(oThis)
+{
+  oThis.onmousemove=null;
+  oThis.onmouseup=null;
+  if(oThis.releaseCapture)
+  {
+    oThis.releaseCapture();
+  }
+}
+</script>
+</body>
+</html>

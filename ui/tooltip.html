@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+#wrap {width:500px;height:500px;border:1px solid #000;margin:20px auto 0 auto}
+
+.toolTip {background:#f00;height:30px;line-height:30px;font-family:"Microsoft Yahei";font-size:12px;padding:0 10px}
+</style>
+</head>
+
+<body>
+  <div id="wrap">
+    <a href="javascript:void(0)" title="toolTip1111111">Tooltips1</a>
+    </br>
+    </br>
+    <p>Tooltips are also useful for form elements, to show some additional information in the context of each field.</p>
+    <p>Tooltips are also useful for form elements, to show somer form elements, to show some<a href="javascript:void(0)" title="toolTip2222222">Tooltips1</a></p>
+  </div>
+<script>
+window.onload=function()
+{
+  var aA=document.getElementsByTagName("a");
+  
+  for (var i=0;i<aA.length;i++)
+  {
+    new ToolTip(aA[i],{delayShow:300,delayHide:300,hideAuto:2000});
+  }
+  
+  
+}
+
+function getXY(obj)
+{
+  var x=0;
+  var y=0;
+  while(obj)
+  {
+    x+=obj.offsetLeft;
+	y+=obj.offsetTop;
+	obj=obj.offsetParent;
+  }
+  return {left:x,top:y};
+}
+
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+function addEvent(obj,sEv,fn)
+{
+  if(obj.attachEvent)
+  {
+    obj.attachEvent('on'+sEv,fn);
+  }
+  else
+  {
+    obj.addEventListener(sEv,fn,false);
+  }
+}
+
+function ToolTip(obj,json)
+{
+  var _this=this;
+
+  this.obj=obj;
+  
+  this.left=getXY(this.obj).left;
+  
+  this.top=getXY(this.obj).top+this.obj.offsetHeight+10;
+  
+  this.oDiv=document.createElement("div");
+  
+  this.oDiv.timer=null;
+  
+  this.title=this.obj.title;
+  
+  this.Arg=json;
+  
+  
+  //初始化方法
+  this._changeArg(this.Arg);
+  
+  this._set();
+  
+  this._reset();
+  
+  this.obj.onmouseover=function()
+  {
+     _this._show();
+	 
+	 setTimeout(function(){
+	 
+	   _this.oDiv.style.display="none";
+	 
+	 },_this.hide_auto_time)
+  }
+  
+  this.obj.onmouseout=function()
+  {
+     _this._hide();
+  }
+  
+  document.body.appendChild(this.oDiv)
+  
+}
+
+
+ToolTip.prototype._changeArg=function(json)
+{
+   if(json)
+   {
+		if(json.delayShow)
+		{
+		   this.delay_show_time=json.delayShow;
+		}
+		else
+		{
+		   this.delay_show_time=0; 
+		}
+		
+		if(json.delayHide)
+		{
+		   this.delay_hide_time=json.delayHide;
+		}
+		else
+		{
+		   this.delay_hide_time=0; 
+		}
+		if(json.hideAuto)
+		{
+		   this.hide_auto_time=json.hideAuto;
+		}
+		else
+		{
+		   this.hide_auto_time=0;
+		}
+  }
+  else
+  {
+		this.delay_show_time=0;
+		this.delay_hide_time=0;
+		this.hide_auto_time=0;
+  }
+
+}
+
+ToolTip.prototype._set=function()
+{
+  this.oDiv.innerHTML=this.title;
+  
+  this.oDiv.className='toolTip';
+
+  setStyle(this.oDiv,
+  {
+   left:this.left+'px',
+   top:this.top+'px',
+   position:'absolute',
+   display:'none'
+  })
+}
+
+ToolTip.prototype._reset=function()
+{
+   var _this=this;
+
+   addEvent(window,'resize',function(){
+  
+     _this.left=getXY(_this.obj).left;
+  
+     _this.top=getXY(_this.obj).top+_this.obj.offsetHeight+10;
+	 
+     _this._set();
+  
+  })
+}
+
+ToolTip.prototype._show=function()
+{
+   var _this=this;
+   
+   this.obj.title="";
+   
+   clearTimeout(this.oDiv.timer);
+   
+   this.oDiv.timer=setTimeout(function(){
+
+     _this.oDiv.style.display='block';
+   
+   },_this.delay_show_time)
+}
+
+ToolTip.prototype._hide=function()
+{
+   var _this=this;
+   this.obj.title=_this.title;
+   
+   clearTimeout(this.oDiv.timer);
+
+   this.oDiv.timer=setTimeout(function(){
+     
+     _this.oDiv.style.display='none';
+   
+   },_this.delay_hide_time)
+}
+
+</script>  
+</body>
+</html>

@@ -1,0 +1,19 @@
+@charset "utf-8";
+/* CSS Document */
+
+* { margin:0; padding:0 }
+img { border:none }
+ul, ol, li { list-style:none }
+#snake { background:url(img/stagebg.jpg) no-repeat; width:1015px; height:342px; margin:0 auto; position:relative }
+#main { width:600px; height:270px; position:relative; top:34px; left:186px }
+#main div { width:30px; height:30px; position:absolute}
+#snake .up { -moz-transform:rotate(90deg); -webkit-transform:rotate(90deg); -o-transform:rotate(90deg); -ms-transform:rotate(90deg); transform:rotate(90deg); -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-1.8369701987210297e-16, M12=-1, M21=1, M22=-1.8369701987210297e-16, SizingMethod='auto expand')"; filter: progid:DXImageTransform.Microsoft.Matrix( M11=-1.8369701987210297e-16, M12=-1, M21=1, M22=-1.8369701987210297e-16, SizingMethod='auto expand');
+}
+#snake .down { -moz-transform:rotate(270deg); -webkit-transform:rotate(270deg); -o-transform:rotate(270deg); -ms-transform:rotate(270deg); transform:rotate(270deg); -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=6.123233995736766e-17, M12=1, M21=-1, M22=6.123233995736766e-17, SizingMethod='auto expand')";  filter: progid:DXImageTransform.Microsoft.Matrix( M11=6.123233995736766e-17, M12=1, M21=-1, M22=6.123233995736766e-17, SizingMethod='auto expand');
+}
+#snake .left { -moz-transform:rotate(0deg); -webkit-transform:rotate(0deg); -o-transform:rotate(0deg); -ms-transform:rotate(0deg); transform:rotate(0deg) }
+#snake .right { -moz-transform:rotate(180deg); -webkit-transform:rotate(180deg); -o-transform:rotate(180deg); -ms-transform:rotate(180deg); transform:rotate(180deg); -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-1, M12=1.2246467991473532e-16, M21=-1.2246467991473532e-16, M22=-1, SizingMethod='auto expand')";  filter: progid:DXImageTransform.Microsoft.Matrix( M11=-1, M12=1.2246467991473532e-16, M21=-1.2246467991473532e-16, M22=-1, SizingMethod='auto expand');
+}
+#msg { width:600px; height:30px; line-height:30px; margin-left:350px; font-family:"雅黑"; font-size:18px; text-align:center; color:#f00 }
+#information { width:600px; height:30px; line-height:30px; margin-left:350px; font-family:"雅黑"; font-size:18px; text-align:center }
+#btn {width:100px;height:40px;background:#003366;cursor:pointer; font-family:"雅黑";text-align:center;line-height:40px;font-size:18px;color:#fff;font-weight:bold;margin-left:600px}

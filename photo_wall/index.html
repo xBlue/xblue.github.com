@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+.move_wrap {width:600px;margin:0 auto;height:600px;border:1px solid #000}
+.move_wrap .move {width:150px;height:150px;background:#ccc;margin:20px;float:left;text-align:center;line-height:150px;border:1px solid #000}
+.move_wrap .move.active {border:1px solid #f00} 
+</style>
+</head>
+
+<body>
+<div class="move_wrap">
+  <div class="move">1</div>
+  <div class="move">2</div>
+  <div class="move">3</div>
+  <div class="move">4</div>
+  <div class="move">5</div>
+  <div class="move">6</div>
+  <div class="move">7</div>
+  <div class="move">8</div>
+  <div class="move">9</div>
+</div>
+
+<script>
+window.onload=function()
+{
+  var oDiv=getByClass(document,"move_wrap")[0];
+  
+  var aDiv=getByClass(oDiv,"move");
+  
+  laychange(aDiv);
+  
+  for (var i=0;i<aDiv.length;i++)
+  {
+    drag(aDiv[i])
+  }
+
+}
+
+//setStyle
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+//getClass
+function getByClass(oParent,sClass)
+{
+  var aResult=[];
+  
+  var aEle=oParent.getElementsByTagName("*");
+  
+  var re=new RegExp('\\b'+sClass+'\\b');
+  
+  for (var i=0;i<aEle.length;i++)
+  {
+    if(re.test(aEle[i].className))
+	{
+	  aResult.push(aEle[i]);
+	}
+  }
+  
+  return aResult;
+}
+
+//获取样式
+function getStyle(obj,attr)
+{
+  if(obj.currentStyle)
+  {
+    return obj.currentStyle[attr];
+  }
+  else
+  {
+    return getComputedStyle(obj,false)[attr];
+  }
+}
+
+//move
+var lastTimer=null;
+
+
+function startMove(obj,json,fn)
+{
+   clearInterval(obj.timer);
+   
+   obj.timer=setInterval(move,30);
+   
+   if(new Date().getTime()-lastTimer>=30)
+   {
+     move();
+   }
+   
+   function move()
+   {
+	 var bStop=true;
+	 
+	 for (attr in json)
+	 {
+	    var iCur="";
+		
+		if(attr=="opacity")
+		{
+		   iCur=Math.round(parseFloat(getStyle(obj,attr))*100);
+		}
+		else
+		{
+		   iCur=parseInt(getStyle(obj,attr));
+		}
+		
+		var iTarget=parseInt(json[attr]);
+		
+		var iSpeed=(iTarget-iCur)/8;
+		
+		iSpeed=iSpeed>0?Math.ceil(iSpeed):Math.floor(iSpeed);
+		
+		if(iCur!=iTarget)
+		{
+		  bStop=false;
+		}
+		
+		if(attr=='opacity')
+		{
+		  obj.style.opacity=(iCur+iSpeed)/100;
+		  obj.style.filter="alpha(opacity="+(iCur+iSpeed)+")";
+		}
+		else
+		{
+		  obj.style[attr]=iCur+iSpeed+'px';
+		}
+	 }
+	 
+	 if(bStop)
+	 {
+	   clearInterval(obj.timer);
+	   
+	   if(fn)
+	   {
+	     fn();
+	   }
+	   
+	   lastTimer=new Date().getTime();
+	   
+	 }
+   
+   }
+}
+
+//laychange
+function laychange(aObj)
+{
+  var aPos=[];
+  
+  for (var i=0;i<aObj.length;i++)
+  {
+     aPos[i]={left:aObj[i].offsetLeft,top:aObj[i].offsetTop}
+  }
+  
+  for (var i=0;i<aObj.length;i++)
+  {
+     setStyle(aObj[i],{left:aPos[i].left+'px',top:aPos[i].top+'px',position:'absolute',margin:'0'})
+	 
+	 aObj[i].index=i;
+  }
+  
+  return aPos;
+}
+
+var iMinIndex=0;
+
+//drag
+function drag(obj)
+{
+  var aPos=laychange(obj.parentNode.children);
+
+  obj.onmousedown=function(ev)
+  { 
+    iMinIndex++;
+	
+	obj.style.zIndex=iMinIndex;
+  
+    var oEvent=ev||event;
+	
+	var disX=oEvent.clientX-obj.offsetLeft;
+	
+	var disY=oEvent.clientY-obj.offsetTop;
+	
+	if(obj.setCapture)
+	{
+	  obj.onmousemove=fnMove;
+	  obj.onmouseup=fnUp;
+	  obj.setCapture();
+	}
+	else
+	{
+	  document.onmousemove=fnMove;
+	  document.onmouseup=fnUp;
+	}
+	clearInterval(obj.timer)
+	return false;
+	
+	function fnMove(ev)
+	{
+	  var oEvent=ev||event;
+	  
+	  var x=oEvent.clientX-disX;
+	  
+	  var y=oEvent.clientY-disY;
+	  
+	  obj.style.left=x+'px';
+	  
+	  obj.style.top=y+'px';
+	  
+	  //检测
+	  for (var i=0;i<obj.parentNode.children.length;i++)
+	  {
+	    obj.parentNode.children[i].className="move";
+	  }
+	  
+	  var oNear=findNearest(obj);
+	  
+	  if(oNear)
+	  {
+	    oNear.className="move active";
+	  } 
+	}
+	
+	function fnUp()
+	{
+	  this.onmousemove=null;
+	  this.onmouseup=null;
+	  if(this.releaseCapture)
+	  {
+	    this.releaseCapture();
+	  }
+	  
+      var oNear=findNearest(obj);
+	  
+	  if(oNear)
+	  {  ////////////
+	     oNear.style.zIndex=iMinIndex++;
+		 obj.style.zIndex=iMinIndex++;
+		 
+		 oNear.className="move";
+	  
+	     startMove(obj,aPos[oNear.index]);
+		 startMove(oNear,aPos[obj.index]);
+	  
+	     var tmp=0;
+		 tmp=obj.index;
+		 obj.index=oNear.index;
+		 oNear.index=tmp;
+
+	  }
+	  else
+	  {
+	    startMove(obj,aPos[obj.index]);
+	  }
+	}
+  }
+}
+
+//cdTest
+function cdTest(obj1,obj2)
+{ 
+  var l1=obj1.offsetLeft;
+  var r1=obj1.offsetLeft+obj1.offsetWidth;
+  var t1=obj1.offsetTop;
+  var b1=obj1.offsetTop+obj1.offsetHeight;
+  
+  var l2=obj2.offsetLeft;
+  var r2=obj2.offsetLeft+obj2.offsetWidth;
+  var t2=obj2.offsetTop;
+  var b2=obj2.offsetTop+obj2.offsetHeight;
+  
+  if(l1>r2||r1<l2||t1>b2||b1<t2)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+}
+
+//getDis
+function getDis(obj1,obj2)
+{
+  var x=obj1.offsetLeft-obj2.offsetLeft;
+  
+  var y=obj1.offsetTop-obj2.offsetTop;
+  
+  var dis=Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+  
+  return dis;
+}
+
+function findNearest(obj)
+{
+  var iMin=9999999;
+  var iMinIndex=-1;
+
+  for (var i=0;i<obj.parentNode.children.length;i++)
+  {
+    if(obj==obj.parentNode.children[i])continue;
+	
+	if(cdTest(obj,obj.parentNode.children[i]))
+	{
+	   var dis=getDis(obj,obj.parentNode.children[i]);
+	   
+	   if(dis<iMin)
+	   {
+	     iMin=dis;
+		 iMinIndex=i;
+	   }
+	}
+  }
+  
+  if(iMinIndex==-1)
+  {
+    return null;
+  }
+  else
+  {
+    return obj.parentNode.children[iMinIndex];
+  }
+}
+
+
+</script>
+</body>
+</html>

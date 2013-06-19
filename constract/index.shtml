@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>小胖魔方</title>
+<script type="text/javascript" src="flex.js"></script>
+<style>
+body {background:#000}
+#wrap {width:300px;height:300px;position:fixed;margin:-150px 0 0 -150px;left:50%;top:50%;-webkit-transform-style:preserve-3d;-webkit-transform:perspective(1500px) rotateX(45deg) rotateY(45deg) translateZ(-50px);-webkit-transform-origin:50% 50%;cursor:pointer}
+.block {width:100px;height:100px;position:absolute;-webkit-transform-style:preserve-3d}
+.block div {width:98px;height:98px;position:absolute;border:1px solid #000}
+.block div.front {-webkit-transform:translateZ(50px);background:#FF0000}
+.block div.back {-webkit-transform:rotateX(-180deg) translateZ(50px);background:#FF0033}
+.block div.top {-webkit-transform:rotateX(90deg) translateZ(50px);background:green}
+.block div.bot {-webkit-transform:rotateX(-90deg) translateZ(50px);background:blue}
+.block div.left {-webkit-transform:rotateY(90deg) translateZ(50px);background:white}
+.block div.right {-webkit-transform:rotateY(-90deg) translateZ(50px);background:yellow}
+
+.d3 {-webkit-transform-style:preserve-3d;position:absolute;-webkit-transform-origin:50% 50%;width:300px;height:300px}
+</style>
+</head>
+
+<body>
+<div id="wrap">
+</div>
+
+<script>
+window.onload=function()
+{
+   var oWrap=document.getElementById("wrap");
+   
+   var na=window.navigator.userAgent;
+   
+   var re=/chrome/gi;
+   
+   if(!re.test(na))
+   {
+      alert('请用chrome浏览器查看');
+   }
+   
+   createBlock(oWrap);
+   
+   drag(oWrap); 
+}
+
+function createBlock(oWrap)
+{
+   var r=3;
+   var c=3;
+   var z=3;
+   var units=100;
+   var aDiv=[];
+   
+   for (var i=0;i<r;i++)
+   {  
+      aDiv[i]=[];
+      for (var j=0;j<c;j++)
+	  {  
+	     aDiv[i][j]=[];
+	     for (var k=0;k<z;k++)
+		 {
+		    var oNewDiv=document.createElement('div');
+			
+			oNewDiv.className='block';
+			
+			oNewDiv.innerHTML=
+				 '<div class="front"></div>'+
+				 '<div class="back"></div>'+
+				 '<div class="bot"></div>'+
+				 '<div class="top"></div>'+
+				 '<div class="left"></div>'+
+				 '<div class="right"></div>';
+			
+			oNewDiv.style.left=units*j+'px';
+			oNewDiv.style.top=units*i+'px';
+			oNewDiv.style.WebkitTransform='translateZ('+(units*k)+'px)';
+			
+			oWrap.appendChild(oNewDiv); 
+			
+			aDiv[i][j][k]=oNewDiv;
+		 }
+	  }
+   }
+   
+   var arr=[];
+   var btn=true;
+   var tranz=[-50,0,50]
+   var timer=null;
+   var count=-1;
+   var cnum=0;
+   
+   for (var i=0;i<3;i++)
+   {
+      var oNewDiv=document.createElement('div');
+	  oNewDiv.className='d3';
+	  arr.push(oNewDiv)
+   }
+   
+   for (var i=0;i<3;i++)
+   {  
+	  for (var j=0;j<3;j++)
+	  {  
+		 arr[0].appendChild(aDiv[i][j][0]);
+		 arr[1].appendChild(aDiv[i][j][1]);
+		 arr[2].appendChild(aDiv[i][j][2]); 
+	  }
+   }
+   
+   for (var i=0;i<3;i++)
+   {
+	  oWrap.appendChild(arr[i]); 
+   }
+   
+   oWrap.onclick=function()
+   {
+      if(btn)
+	  {
+	      cnum++;
+	  
+		  if(cnum%2!=0)
+		  {
+			 move();
+		  }
+		  else
+		  {
+			 move2();
+		  }
+	  } 
+   }
+   
+   function move()
+   {   
+       count=-1;
+	   btn=false;
+	   timer=setInterval(startMove,100)
+	   
+	   function startMove()
+	   {
+	       count++;
+		   
+		   if(count==2)
+		   {
+		     clearInterval(timer);
+		   }
+	       
+	       (function(index){
+              
+			  flex(arr[count],
+				 {deg:0,Tranz:0},
+				 {deg:(count+1)*90,Tranz:tranz[index]},
+				 function (json)
+				 {
+					arr[index].style.WebkitTransform='translateZ('+(json.Tranz)+'px) rotateZ('+(json.deg)+'deg)'; 
+				 },
+				 'elec',
+				 5,
+				 function()
+				 {
+				   if(index==2)
+				   {
+				     btn=true;
+				   }
+				 }
+			   )
+		   })(count)
+	   }       
+   }
+   
+   
+   function move2()
+   {   
+       count=-1;
+       btn=false;
+	   timer=setInterval(startMove,100)
+	   
+	   function startMove()
+	   {
+	       count++;
+		   
+		   if(count==2)
+		   {
+		     clearInterval(timer);
+		   }
+	       
+	       (function(index){
+              
+			  flex(arr[count],
+				 {deg:(count+1)*90,Tranz:tranz[index]},
+				 {deg:0,Tranz:0},
+				 function (json)
+				 {
+					arr[index].style.WebkitTransform='translateZ('+(json.Tranz)+'px) rotateZ('+(json.deg)+'deg)'; 
+				 },
+				 'elec',
+				 5,
+				 function ()
+				 {
+				   if(index==2)
+				   {
+				     btn=true;
+				   }
+				 }
+			   )
+		   })(count)
+	   }       
+   }
+}
+
+function drag(obj)
+{
+  var startX=45;
+  var startY=45;
+  var nowX=0;
+  var nowY=0;
+  var initX=45;
+  var initY=45;
+  var sensity=15;
+  
+  document.onmousedown=function(ev)
+  {
+    var oEvent=ev||event;
+	
+	var disX=oEvent.clientX-startX;
+	var disY=oEvent.clientY-startY;
+	
+	document.onmousemove=function(ev)
+	{
+	  var oEvent=ev||event;
+	  
+	  nowX=oEvent.clientX-disX;
+	  nowY=oEvent.clientY-disY;
+	  
+	  obj.style.WebkitTransform='perspective(1500px) rotateX('+(-nowY/sensity+initY)+'deg) rotateY('+(nowX/sensity+initX)+'deg) translateZ(-50px)';
+	}
+	
+	document.onmouseup=function()
+	{
+	   document.onmousemove=null;
+	   document.onmouseup=null;
+	   startX=nowX;
+	   startY=nowY;
+	}
+	
+	return false;
+  }
+}
+</script>
+</body>
+</html>

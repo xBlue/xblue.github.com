@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+
+/* 纵向 */
+.roller {position:relative;overflow:hidden;border:1px solid #000}
+.roller .content_wrap {height:100%;width:95%;overflow:hidden;position:relative}
+.roller .content {width:100%;position:absolute;top:0;left:0}
+.roller .roll_wrap {width:5%;height:100%;position:absolute;right:0;top:0;background:#ccc}
+.roller .roll {width:100%;height:20px;position:absolute;left:0;background:#f00}
+
+/*横向*/
+.roller.false .content_wrap {height:95%;width:100%;overflow:hidden;position:absolute;top:0;left:0}
+.roller.false .content {height:100%;position:absolute;top:0;left:0}
+.roller.false .content li {float:left}
+.roller.false .roll_wrap {height:5%;width:100%;position:absolute;left:0;bottom:0;background:#ccc;top:auto}
+.roller.false .roll {width:20px;height:100%;position:absolute;left:0;top:0;background:#f00}
+</style>
+</head>
+
+<body>
+<label>设置</label><input id="set" type="text"><input id="setBtn" type="button" value="set">(填数字)</br>
+</br>
+<label>获取(滚动条的offset)</label><input id="getBtn" type="button" value="set"></br>
+</br>
+<label>接收onchange</label><input id="onchange" type="text"></br>
+<div class="roller">
+  <div class="content_wrap">
+    <div class="content">
+      <ul>
+          <li>111111111111111111111111111</li>
+          <li>22222222222222222222222222</li>
+          <li>33333333333333333333333333</li>
+          <li>44444444444444444444444444</li>
+          <li>5555555555555555555555</li>
+          <li>666666666666666666666666</li>
+          <li>7777777777777777777777777777</li>
+          <li>88888888888888888</li>
+          <li>9999999999999999999999999</li>
+          <li>111111111111111111111111111</li>
+          <li>22222222222222222222222222</li>
+          <li>33333333333333333333333333</li>
+          <li>44444444444444444444444444</li>
+          <li>5555555555555555555555</li>
+          <li>666666666666666666666666</li>
+          <li>7777777777777777777777777777</li>
+          <li>88888888888888888</li>
+          <li>9999999999999999999999999</li>
+          <li>111111111111111111111111111</li>
+          <li>22222222222222222222222222</li>
+          <li>33333333333333333333333333</li>
+          <li>44444444444444444444444444</li>
+          <li>5555555555555555555555</li>
+          <li>666666666666666666666666</li>
+          <li>7777777777777777777777777777</li>
+          <li>88888888888888888</li>
+          <li>9999999999999999999999999</li>
+          <li>111111111111111111111111111</li>
+          <li>22222222222222222222222222</li>
+          <li>33333333333333333333333333</li>
+          <li>44444444444444444444444444</li>
+          <li>5555555555555555555555</li>
+          <li>666666666666666666666666</li>
+          <li>7777777777777777777777777777</li>
+          <li>88888888888888888</li>
+          <li>9999999999999999999999999</li>
+          <li>这是最后一行</li>
+      </ul>
+    </div>
+  </div>
+  <div class="roll_wrap">
+    <div class="roll"></div>
+  </div>
+</div>
+
+<script>
+window.onload=function()
+{
+   var oDiv=getByClass(document,"roller")[0];
+   
+   var oSetValue=document.getElementById("set");
+   
+   var oSetBtn=document.getElementById("setBtn");
+   
+   var oGetBtn=document.getElementById("getBtn");
+   
+   var oChange=document.getElementById("onchange");
+   
+   var roller=new Roll(oDiv,{width:'250px',height:'300px',vertical:true});
+   
+   //设置
+   oSetBtn.onclick=function()
+   {
+     var num=parseInt(oSetValue.value);
+	 
+	 roller._setDis(num);
+   }
+   
+   //获取
+   oGetBtn.onclick=function()
+   {
+      alert(roller._getDis()+'px');
+   }
+   
+   //onchange
+   roller.onchange(function(){
+   
+     oChange.value=roller._getDis()+'px';
+   
+   });
+}
+
+function getByClass(oParent,sClass)
+{
+  var aResult=[];
+  
+  var aEle=document.getElementsByTagName("*");
+  
+  var re=new RegExp('\\b'+sClass+'\\b');
+  
+  for (var i=0;i<aEle.length;i++)
+  {
+    if(re.test(aEle[i].className))
+	{
+	  aResult.push(aEle[i]);
+	}
+  }
+  return aResult;
+}
+
+function setStyle(obj,json)
+{
+  for (var i in json)
+  {
+    obj.style[i]=json[i];
+  }
+}
+
+function Roll(obj,json)
+{
+   var _this=this;
+   
+   this.vertical=json.vertical;
+   
+   this.fn=[];
+   
+   //选取元素
+   this.oDiv=obj;
+   
+   this.oContentWrap=getByClass(this.oDiv,"content_wrap")[0];
+   
+   this.oContent=getByClass(this.oDiv,"content")[0];
+   
+   this.oRollWrap=getByClass(this.oDiv,"roll_wrap")[0];
+   
+   this.oRoll=getByClass(this.oDiv,"roll")[0];
+   
+   //设置样式
+   this.width=parseInt(json.width);
+   
+   this.height=parseInt(json.height);
+   
+   //初始化方法
+   this._Set();
+   
+   this.oRoll.onmousedown=function(ev)
+   {
+      _this._fnDown(ev);
+	  
+	  return false;
+   }
+   
+   this._mouseWheel();
+}
+
+//设置样式
+Roll.prototype._Set=function()
+{  
+   if(!this.vertical)
+   {
+      this.oDiv.className="roller false";
+	  
+	  var aLi=this.oContent.children[0].children;
+	  
+	  var sum=0;
+	  
+	  for (var i=0;i<aLi.length;i++)
+	  {
+	    sum+=aLi[i].offsetWidth;
+	  }
+	  
+	  this.oContent.style.width=sum+'px';
+   }
+
+   setStyle(this.oDiv,
+   {
+     width:this.width+'px',
+     height:this.height+'px'
+   })
+}
+
+//down
+Roll.prototype._fnDown=function(ev)
+{
+  var oEvent=ev||event;
+  
+  var _this=this;
+  
+  if(this.vertical)
+  {  
+     this.dis=oEvent.clientY-this.oRoll.offsetTop; 
+  }
+  else
+  {
+     this.dis=oEvent.clientX-this.oRoll.offsetLeft;
+  }
+  
+  if(this.oRoll.setCapture)
+  {
+     this.oRoll.onmousemove=function(ev)
+	 {
+		_this._fnMove(ev);
+	 };
+	  
+	 this.oRoll.onmouseup=function()
+	 {
+		_this._fnUp(this);
+	 };
+	 
+     this.oRoll.setCapture(); 
+  }
+  else
+  {
+     document.onmousemove=function(ev)
+	 {
+		_this._fnMove(ev);
+	 };
+	  
+	 document.onmouseup=function()
+	 {
+		_this._fnUp(this);
+	 };
+  }
+ 
+}
+
+//move
+Roll.prototype._fnMove=function(ev)
+{
+   var oEvent=ev||event;
+   
+   if(this.vertical)
+   {
+      this.now=oEvent.clientY-this.dis;
+	  this._setDis(this.now);
+   }
+   else
+   {
+      this.now=oEvent.clientX-this.dis;
+	  this._setDis(this.now);
+   }
+}
+
+//up
+Roll.prototype._fnUp=function(oThis)
+{
+  oThis.onmousemove=null;
+  oThis.onmouseup=null;
+  if(oThis.releaseCapture)
+  {
+    oThis.releaseCapture();
+  }
+}
+
+//setDis
+Roll.prototype._setDis=function(dis)
+{
+   if(this.vertical)
+   {
+      if(dis<=0)dis=0;
+	  if(dis>=this.oRollWrap.offsetHeight-this.oRoll.offsetHeight)dis=this.oRollWrap.offsetHeight-this.oRoll.offsetHeight;
+	  
+	  this.scacle=dis/(this.oRollWrap.offsetHeight-this.oRoll.offsetHeight);
+	  this.oContent.style.top=(this.oContentWrap.offsetHeight-this.oContent.offsetHeight)*this.scacle+'px';
+	  
+	  this.oRoll.style.top=dis+'px';
+	  
+   }
+   else
+   {
+      if(dis<=0)dis=0;
+	  if(dis>=this.oRollWrap.offsetWidth-this.oRoll.offsetWidth)dis=this.oRollWrap.offsetWidth-this.oRoll.offsetWidth;
+	  
+	  this.scacle=dis/(this.oRollWrap.offsetWidth-this.oRoll.offsetWidth);
+	  this.oContent.style.left=(this.oContentWrap.offsetWidth-this.oContent.offsetWidth)*this.scacle+'px';
+	  
+	  this.oRoll.style.left=dis+'px';
+   }
+   
+   this.fn[0]();
+}
+
+//getDis
+Roll.prototype._getDis=function()
+{
+  if(this.vertical)
+  {
+     return this.oRoll.offsetTop;
+  }
+  else
+  {
+     return this.oRoll.offsetLeft;
+  }
+  
+}
+
+//mousewheel
+Roll.prototype._mouseWheel=function()
+{ 
+  var _this=this;
+
+  if(window.addEventListener)
+  {
+     this.oDiv.addEventListener('DOMMouseScroll',function(ev){
+	     
+		_this._Wheel(ev);
+        
+	 },false) 
+  }  
+    
+  this.oDiv.onmousewheel=function(ev)
+  {   
+	   _this._Wheel(ev)
+  }
+}
+
+//wheel
+Roll.prototype._Wheel=function(ev)
+{ 
+   var oEvent=ev||event;
+   
+   this.bDown=oEvent.wheelDelta?oEvent.wheelDelta<0:oEvent.detail>0;
+   
+   if(this.bDown)
+   {
+      if(this.vertical)
+	  {
+	     this.wheelT=this.oRoll.offsetTop+10;
+		 this._setDis(this.wheelT);
+	  }
+	  else
+	  {
+	     this.wheelL=this.oRoll.offsetLeft+10;
+		 this._setDis(this.wheelL);
+	  }
+   }
+   else
+   {
+      if(this.vertical)
+	  {
+	     this.wheelT=this.oRoll.offsetTop-10;
+		 this._setDis(this.wheelT);
+	  }
+	  else
+	  {
+	     this.wheelL=this.oRoll.offsetLeft-10;
+		 this._setDis(this.wheelL);
+	  }
+   }
+   
+   if(oEvent.preventDefault)
+   {
+     oEvent.preventDefault();
+   }
+   else
+   {
+     return false;
+   }
+}
+
+//onchange
+Roll.prototype.onchange=function(fn)
+{
+   this.fn.push(fn);
+}
+</script>
+</body>
+</html>
