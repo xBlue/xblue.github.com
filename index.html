@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>web前端开发与学习</title>
+<script src="javascript/flex.js"></script>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+body {overflow:hidden}
+
+#close {width:50px;height:50px;background:#fff;position:fixed;z-index:9999;right:0;top:0px;cursor:pointer;-webkit-transform-origin:right top;border-bottom-left-radius:50px;-webkit-transform:rotate(90deg)}
+
+#shadow {width:0%;height:0%;background:#000;position:fixed;top:0;right:0;border-bottom-left-radius:100%;opacity:0;-webkit-transition:1s}
+
+#content {position:fixed;width:100%;height:80%;top:0;left:0;-webkit-transform-style:preserve-3d;-webkit-transform:perspective(800px);top:100px}
+#content ul {position:absolute;width:25%;height:100%;-webkit-transition:1s;-webkit-transform-style:preserve-3d;font-size:100px}
+#content ul li {width:100%;height:30%;color:#fff;-webkit-transform:rotateX(-90deg);-webkit-transform-origin:50% top;opacity:0;text-align:center;text-shadow:2px 2px 2px #000;margin-top:10px;position:relative;}
+#content ul li img{width:100%;height:100%;}
+#content ul li span{display:block;width:100%;height:25px;text-align:center;position: absolute;bottom:0;left:0;font-size:14px;line-height:25px;background:#000;opacity:0.7;filter:alpha(opacity:70);color:#ccc;}
+#content ul li:hover {box-shadow:0 0 10px 6px #0164C5,inset 0 0 10px 6px #0164C5}
+
+#content ul.l1 {left:-25%;-webkit-transform:rotateY(45deg);opacity:0}
+#content ul.l2 {left:0%;-webkit-transform:rotateY(26deg);opacity:1}
+#content ul.l3 {left:25%;-webkit-transform:rotateY(10deg) scale(0.89) translateX(25px);opacity:1}
+
+#content ul.r1 {left:50%;-webkit-transform:rotateY(-10deg) scale(0.89);opacity:1}
+#content ul.r2 {left:75%;-webkit-transform:rotateY(-26deg) translateX(25px);opacity:1}
+#content ul.r3 {left:100%;-webkit-transform:rotateY(-45deg);opacity:0}
+
+#btn_wrap {width:100px;position:fixed;top:10px;margin-left:-50px;left:50%;z-index:10000;opacity:0;-webkit-transition:1s}
+#btn_wrap div {width:50px;height:20px;cursor:pointer;float:left;line-height:20px;text-align:center}
+#left {background:#000;color: red;}
+#right {background:#000;color: red;}
+</style>
+</head>
+
+<body>
+  <div id="btn_wrap">
+    <div id="left">&lt;&lt;</div>
+    <div id="right">&gt;&gt;</div>
+  </div>
+  <div id="close"></div>
+  <div id="shadow"></div>
+  <div id="content">
+    <ul class="l1">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="l2">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="l3">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="r1">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="r2">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="r3">
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  
+<script>
+var na=window.navigator.userAgent;
+var re=/chrome/gi;
+
+
+var oClose=document.getElementById("close");
+var oShadow=document.getElementById("shadow");
+var oContent=document.getElementById("content");
+var oBtnWrap=document.getElementById("btn_wrap");
+var aUl=oContent.children;
+var aLi=oContent.getElementsByTagName("li");
+var arrClass=['l1','l2','l3','r1','r2','r3'];
+var btn=true;
+
+var oLeft=document.getElementById('left');
+var oRight=document.getElementById('right');
+
+if(!re.test(na))
+{ 
+  alert('请用最新版chrome浏览器查看');
+}
+else
+{
+  showList()
+}
+
+function rnd(m,n)
+{
+  return Math.floor(Math.random()*((m+1)-n)+n)
+}
+
+for (var i=0;i<aLi.length;i++)
+{
+   //aLi[i].innerHTML=i+1;
+aLi[0].innerHTML="<span>3D时钟</span><a href='http://xblue.github.io/3D%20clock/3Dtime.html'><img src='img/1.jpg' /></a>";
+aLi[1].innerHTML="<span>相册 1</span><a href='http://xblue.github.io/Album1/index.html'><img src='img/2.jpg' /></a>";
+aLi[2].innerHTML="<span>相册 2</span><a href='http://xblue.github.io/Album2/index.html'><img src='img/3.jpg' /></a>";
+aLi[3].innerHTML="<span>相册 3</span><a href='http://xblue.github.io/Album3/index.html'><img src='img/4.jpg' /></a>";
+aLi[4].innerHTML="<span>百度搜索</span><a href='http://xblue.github.io/Baidu%20search/baidu.html'><img src='img/5.jpg' /></a>";
+aLi[5].innerHTML="<span>拖动窗口</span><a href='http://xblue.github.io/Drag%20the%20window/index.html'><img src='img/6.jpg' /></a>";
+aLi[6].innerHTML="<span>无缝滚动</span><a href='http://xblue.github.io/Seamless%20rolling/Seamless%20rolling.html'><img src='img/7.jpg' /></a>";
+aLi[7].innerHTML="<span>新浪首页</span><a href='http://xblue.github.io/sina/sina.html'><img src='img/8.jpg' /></a>";
+aLi[8].innerHTML="<span>网易时尚</span><a href='http://xblue.github.io/163/index.html'><img src='img/9.jpg' /></a>";
+aLi[9].innerHTML="<span>webQQ</span><a href='http://xblue.github.io/webQQ/webQQ.html'><img src='img/10.jpg' /></a>";
+aLi[10].innerHTML="<span>3D魔方</span><a href='http://xblue.github.io/constract/index.html'><img src='img/11.jpg' /></a>";
+aLi[11].innerHTML="<span>碰撞交换</span><a href='http://xblue.github.io/photo_wall/index.html'><img src='img/12.jpg' /></a>";
+aLi[12].innerHTML="<span>重新排列</span><a href='http://xblue.github.io/reset/index.html'><img src='img/13.jpg' /></a>";
+aLi[13].innerHTML="<span>运动菜单</span><a href='http://xblue.github.io/slide/index.html'><img src='img/14.jpg' /></a>";
+aLi[14].innerHTML="<span>游戏贪吃蛇</span><a href='http://xblue.github.io/snake/index.html'><img src='img/15.jpg' /></a>";
+aLi[15].innerHTML="<span>对象化组件</span><a href='http://xblue.github.io/ui/index.html'><img src='img/16.jpg' /></a>";
+aLi[16].innerHTML="<span>ZNS官网</span><a href='http://xblue.github.io/zns/index.html'><img src='img/17.jpg' /></a>";
+aLi[17].innerHTML="<span>少林足球</span><a href='http://xblue.github.io/football/index.html'><img src='img/18.jpg' /></a>";
+
+   //aLi[i].style.backgroundColor='rgb('+rnd(255,0)+','+rnd(255,0)+','+rnd(255,0)+')'
+   //aLi[i].style.background.src='img/1.jpg';
+  // aLi[i].src='img/'+(i+1)+'.jpg';
+}
+
+function showList()
+{
+   flex(oClose,
+     {deg:90},
+	 {deg:0},
+	 function(json)
+	 {
+	    oClose.style.WebkitTransform='rotate('+(json.deg)+'deg)';
+	 },
+	 'buffer',
+	 8,
+	 function()
+	 {
+	    shwoShadow()
+	 }
+   )
+}
+
+function shwoShadow()
+{   
+     var loaded=0;
+     
+	 oShadow.style.width='150%';
+	 oShadow.style.height='150%';
+	 oShadow.style.opacity='1';
+	 
+	 oShadow.addEventListener('webkitTransitionEnd',function(){
+	 
+	    loaded++;
+		
+		if(loaded==3)
+		{
+		   slideDown();
+		}
+	 
+	 },false)
+}
+
+function slideDown()
+{
+   var timer=null;
+   var num=aLi.length;
+   var count=-1;
+   
+   timer=setInterval(move,100);
+   
+   function move()
+   {   
+      count++;
+	  
+	  if(count==num-1)clearInterval(timer);
+	  (function(index){
+		  flex(aLi[index],
+			{deg:-90,op:0},
+			{deg:0,op:100},
+			function(json)
+			{  
+			   aLi[index].style.WebkitTransform='rotateX('+json.deg+'deg)';
+			   aLi[index].style.opacity=json.op/100;
+			},
+			'elec',
+			4,
+			function()
+			{
+			   if(index==num-1)
+			   {
+			     addClick();
+				 oBtnWrap.style.opacity=1;
+			   }
+			}
+		  )
+	  })(count)
+   }
+}
+
+oLeft.onmousedown=oRight.onmousedown=function()
+{
+  return false;
+}
+
+function addClick()
+{
+   oLeft.onclick=function()
+   {  
+      if(btn)
+	  {
+	      btn=false;
+	     
+	      arrClass.unshift(arrClass.pop());
+	  
+		  for (var i=0;i<aUl.length;i++)
+		  {
+			 aUl[i].className=arrClass[i];
+		  }
+		  
+		  aUl[0].addEventListener('webkitTransitionEnd',function(){
+		  
+		    btn=true;
+		  
+		  },false)
+	  }  
+   };
+   
+   oRight.onclick=function()
+   {
+      if(btn)
+      {   
+	      btn=false;
+	  
+	      arrClass.push(arrClass.shift());
+	  
+		  for (var i=0;i<aUl.length;i++)
+		  {
+			 aUl[i].className=arrClass[i]
+		  }
+		  
+		  aUl[0].addEventListener('webkitTransitionEnd',function(){
+		  
+		    btn=true;
+		  
+		  },false)
+	  }
+   }
+}
+</script>
+</body>
+</html>
