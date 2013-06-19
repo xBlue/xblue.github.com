@@ -1,0 +1,768 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>webQQ</title>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/index.css">
+<script src="js/index.js"></script>
+<script src="js/common.js"></script>
+<script src="js/base.js"></script>
+<script src="js/webqq.js"></script>
+<script src="js/createTalk.js"></script>
+<script>
+function time2date(t)
+{
+	var oDate=new Date();
+	oDate.setTime(t*1000);
+	return toDouble(oDate.getFullYear())+'-'+toDouble((oDate.getMonth()+1))+'-'+toDouble(oDate.getDate())+' '+toDouble(oDate.getHours())+':'+toDouble(oDate.getMinutes());	
+};
+//jsonp的函数
+function jsonp(url,data,fn)
+{
+	var fnName='fn'+parseInt(Random(1,3000));
+	
+	window[fnName]=function (json)
+	{
+		//完成——script扔
+		oHead.removeChild(oS);
+		clearTimeout(timer);
+		
+		fn(json);
+	};
+	
+	var timer=setTimeout(function (){
+		alert('超时');
+	}, 3000);
+	
+	
+	data.t=Math.random();
+	data.cb=fnName
+	var arr=[];
+	for(var i in data)
+	{
+		arr.push(i+'='+data[i]);	
+	}
+	var str=url+'?'+arr.join('&');
+	var oS=document.createElement('script');
+	oS.src=str;
+	var oHead=document.getElementsByTagName('head')[0];
+	oHead.appendChild(oS);
+}
+window.onload=function()
+{
+	//效果
+	var oTalk=document.getElementById('talk');
+	//QQ弹出层
+	var MyuserName=null;
+	var oQbtn=document.getElementById('login_btn');
+	var oLoginWrap=document.getElementById('login');
+	var oZz=document.getElementById('zzc');
+	clickShow(oQbtn,oLoginWrap,oZz) ;
+	//QQ拖拽移动
+	var oMoveQ=getByClass(oLoginWrap,'loginMove')[0];
+	ObjMove(oMoveQ,oLoginWrap);
+	//QQ关闭
+	var oClose=getByClass(oLoginWrap,'login_close')[0];
+	closeLogin(oClose,oLoginWrap,oZz);
+	//应用鼠标移入效果
+	(function()
+	{
+		var oDiv=document.getElementById('useWrap');
+		var aDiv=oDiv.children;
+		var aSpan=oDiv.getElementsByTagName('span');
+		moveWrap(aDiv,aSpan);	
+	})();
+	//显示或隐藏
+	(function()
+	{
+		var oList=getByClass(oTalk,'userList')[0];
+		var oListBtn=getByClass(oTalk,'zxlb')[0];
+		
+		oListBtn.onclick=function()
+		{
+			if(oList.style.display=='none')	
+			{
+				oList.style.display='block';	
+			}
+			else
+			{
+				oList.style.display='none';
+			}
+		}
+	})();
+	//闪动
+	function showMove()
+	{
+		var oMoves=null;
+		oMoves=setInterval(function()
+		{
+			oLoginWrap.style.marginLeft=parseInt(Math.random()*10-2)+'px';
+			oLoginWrap.style.marginTop=parseInt(Math.random()*10-2)+'px';
+		},1);
+		
+		setTimeout(function()
+		{
+			clearInterval(oMoves);
+		},200);
+			
+	}
+	//自定义滚动条
+	var oTalkBox=getByClass(oTalk,'talkBox')[0];
+	var oListBox=getByClass(oTalk,'userList')[0];
+	function addScroll()
+	{
+		var oContent=useWheel(oTalkBox,oTalkBox,'talk_content','scorllWhell','scorllWhellDelta','up','down');
+		var oUserList=useWheel(oListBox,oListBox,'userNameListBox','scorllWhell','scorllWhellDelta','up','down');
+		
+		oContent.oPint(1);
+		oUserList.oPint(1);
+		
+		msgToBottom=function ()
+		{
+			oContent.oPint(1);
+			oUserList.oPint(1);
+		};
+	}
+	//注册
+	var oReBtn=document.getElementById('qqzhuce_btn');
+	var oQText=document.getElementById('qqLoginText');
+	var oQPass=document.getElementById('qqPassWord');
+	var Url='http://www.zhinengshe.com/exercise/im/api.php';
+	oReBtn.onclick=function()
+	{
+		jsonp(
+			url=Url,
+			{a:'reg',user:oQText.value,pass:oQPass.value,face:1},
+			function(json)
+			{
+				if(json.err)
+				{
+					alert('错误:'+json.msg);	
+				}
+				else
+				{
+					alert('恭喜您注册成功了');	
+				}	
+			}
+		)	
+	};
+	//登录
+	var oLoginBtn=document.getElementById('qqlogin_btn');
+	var Nore=null;
+	oLoginBtn.onclick=function()
+	{
+		jsonp(
+			url=Url,
+			{a:'lgn',user:oQText.value,pass:oQPass.value},
+			function(json)
+			{
+				if(json.err)
+				{
+					alert('错误:'+json.msg);	
+				}
+				else
+				{
+					alert('欢迎来到聊天室');
+					showMove();
+					showTalk();
+					MyuserName=oQText.value;
+					getAll();
+					reList();
+					Nore=setInterval(reContent,2000);
+				}	
+			}
+		);	
+	};
+	//显示聊天
+	var oTalk=document.getElementById('talk');
+	var oTalkMove=getByClass(oTalk,'talkMove')[0];
+	var max_msg_id=0;
+	ObjMove(oTalkMove,oTalk);
+	function showTalk()
+	{
+		oZz.style.display='none';
+		oLoginWrap.style.display='none';
+		oTalk.style.display='block';
+		var oW=(document.documentElement.clientWidth-oTalk.offsetWidth)/2;
+		var oH=(document.documentElement.clientHeigth-oTalk.offsetHeigth)/2;
+		oTalk.style.top=oH+'px';
+		oTalk.style.left=oW+'px';	
+		
+	}
+	//完成获取，刷新，获取列表
+	var oContentMsgUl=getByClass(oTalk,'talk_content')[0];
+	function getAll()
+	{
+		jsonp(
+			url=Url,
+			{a:'get_msg'},
+			function(json)
+			{
+				for(var i=0;i<json.data.length;i++)
+				{
+					createLi(json.data[i].ID, json.data[i].username, time2date(json.data[i].post_time), json.data[i].content);
+				}
+				
+				addScroll();	
+			}
+		);
+			
+	};
+	function reContent()
+	{
+		jsonp(
+			url=Url,
+			{
+				a:'get_msg_n',
+				n:max_msg_id	
+			},
+			function (json)
+			{
+				if(json.err)
+				{
+					alert('更新数据失败：'+json.msg);
+				}
+				else
+				{
+					for(var i=0;i<json.data.length;i++)
+					{
+						createLi(json.data[i].ID, json.data[i].username, time2date(json.data[i].post_time), json.data[i].content);
+					}
+					
+					if(json.data.length)
+					{
+						//有新消息，跳下来
+						msgToBottom();
+					}	
+				}
+			}
+			
+		)	
+	}
+	var oUserListUl=getByClass(document,'userNameListBox')[0];
+	function reList()
+	{
+		jsonp(
+			url=Url,
+			{a:'get_user_list'},
+			function(json)
+			{
+				for(var i=0;i<json.data.length;i++)
+				{
+					var oLi=document.createElement('li');
+					oLi.innerHTML='<span class="headerPic"><img src="http://www.zhinengshe.com/exercise/im/images/face/'+json.data[i].face+'.jpg"></span><div class="userNameList">'+json.data[i].username+'</div>';
+					oUserListUl.appendChild(oLi);
+					addScroll();
+				}
+				
+			}
+		);
+		
+			
+	};
+	//发言
+	var oFText=getByClass(oTalk,'inText')[0];
+	var oFBtn=getByClass(oTalk,'tack_button')[0];
+	function toTalk()
+	{
+		if(oFText.value=='')
+		{
+			alert('没有内容');
+			return ;	
+		}
+		jsonp(
+			url=Url,
+			{a:'snd_msg',content:oFText.value},
+			function(json)
+			{
+				createLi(json.ID, MyuserName,time2date(json.time), oFText.value);
+				oFText.value='';
+				addScroll();	
+			}
+			
+		);
+		
+	}
+	oFBtn.onclick=function()
+	{
+		toTalk();	
+	}
+	oFText.onkeydown=function(ev)
+	{
+		var oEvent=ev || event;
+		if(oEvent.keyCode==13)
+		{
+			setTimeout(toTalk,10);
+			return false;	
+		}
+			
+	}
+	function createLi(id,username,time,content)
+	{
+		id=parseInt(id);
+		var oLi=document.createElement('li');
+		oLi.className='MyName';
+		oLi.innerHTML=oLi.innerHTML='<div class="taler"><span class="taler_name">'+username+'</span><span class="talk_time">'+time+'</span></div><div class="talker_content">'+content+'</div>';
+		oContentMsgUl.appendChild(oLi);	
+		
+		if(id>max_msg_id)
+		{
+			max_msg_id=id;
+		}	
+	}
+	//退出聊天室
+	var oCloseTalk=getByClass(oTalk,'talk_close')[0];
+	oCloseTalk.onclick=function()
+	{
+		jsonp(
+			url=Url,
+			{
+				a:'logout'	
+			},
+			function(json)
+			{
+				clearInterval(Nore);
+				alert(json.msg);
+				oTalk.style.display='none';
+			}
+		)	
+	};
+	//切换内容部分
+	(function()
+	{
+		var oDiv=document.getElementById('contentWrap');
+		var aBtn=oDiv.getElementsByTagName('ul')[0].getElementsByTagName('li');
+		//var oContent=oDiv.getElementsByTagName('div')[0].children[0];
+		var aContent=oDiv.getElementsByTagName('div')[0].children[0].children;
+		//oContent.style.width=aContent[0].offsetWidth*aContent.length+'px';
+		for(var i=1;i<aBtn.length-2;i++)
+		{
+			(function(index)
+			{
+				aBtn[i].onclick=function()
+				{
+					for(var i=1;i<aBtn.length-2;i++)
+					{
+						aBtn[i].className='';
+						startMove(aContent[i-1],{opacity:0},20);
+					}
+					aBtn[index].className='active';
+					//startMove(oContent,{left:-(index-1)*aContent[0].offsetWidth});
+					startMove(aContent[index-1],{opacity:100},20);
+				}	
+			})(i);	
+		}
+	})();
+	//内容部分
+	(function()
+	{
+		//鼠标移动效果
+		var oDiv=document.getElementById('fuck');
+		var aBtn=oDiv.getElementsByTagName('li');
+		var aWrap=getByClass(oDiv,'showBackground');
+		moveWrap(aBtn,aWrap);
+		
+		
+		//----------------------------------------------------------------------
+		//布局转化
+		var zIndex=2;
+		var poS=[];
+		for(var i=0;i<aBtn.length;i++)
+		{
+			aBtn[i].index=i;
+			poS[i]={left:aBtn[i].offsetLeft,top:aBtn[i].offsetTop}	
+		};
+		
+		for(var i=0;i<aBtn.length;i++)
+		{
+			aBtn[i].style.position='absolute';
+			aBtn[i].style.margin='0px';
+			aBtn[i].style.left=poS[i].left+'px';
+			aBtn[i].style.top=poS[i].top+'px';
+
+		};
+		
+		
+		//拖拽
+		for(var i=0;i<aBtn.length;i++)
+		{
+			setDrag(aBtn[i]);	
+		};
+		
+		function setDrag(obj)
+		{
+			obj.onmousedown=function(ev)
+			{
+				obj.style.zIndex=zIndex++;
+				var oEvent=ev||event;
+				var disX=oEvent.clientX-obj.offsetLeft;
+				var disY=oEvent.clientY-obj.offsetTop;
+				
+				//创造一个站位的Li
+				var oNewLi=document.createElement('li');
+				oNewLi.className='oNew';
+				oDiv.insertBefore(oNewLi,obj);
+				oNewLi.style.margin='0';
+				oNewLi.style.left=poS[obj.index].left+'px';
+				oNewLi.style.top=poS[obj.index].top+'px';
+				oNewLi.index=obj.index;
+				
+				document.onmousemove=function(ev)
+				{
+					var oEvent=ev||event;
+					obj.style.left=oEvent.clientX-disX+'px';
+					obj.style.top=oEvent.clientY-disY+'px';	
+					
+					var oNear=findNearest(obj);
+					if(oNear)
+					{
+						//obj->oNear
+						oNewLi.style.left=poS[oNear.index].left+'px';
+						oNewLi.style.top=poS[oNear.index].top+'px';
+						
+						//oNear->obj
+						oNear.style.left=poS[oNewLi.index].left+'px';
+						oNear.style.top=poS[oNewLi.index].top+'px';
+						
+						//交换index
+						var tmp=oNear.index;
+						oNear.index=oNewLi.index;
+						oNewLi.index=tmp;
+					}
+				};
+				document.onmouseup=function()
+				{
+					document.onmousemove=null;
+					document.onmouseup=null;	
+					
+					
+					
+					obj.index=oNewLi.index;
+					
+					obj.style.left=poS[obj.index].left+'px';
+					obj.style.top=poS[obj.index].top+'px';
+					
+					
+					oDiv.removeChild(oNewLi);
+				};
+				return false;
+			};
+		};
+		
+		//碰撞检测
+		function collTest(obj1,obj2)
+		{
+			var t1=obj1.offsetTop;
+			var b1=obj1.offsetTop+obj1.offsetHeight;
+			var l1=obj1.offsetLeft;
+			var r1=obj1.offsetLeft+obj1.offsetWidth;
+			
+			var t2=obj2.offsetTop;
+			var b2=obj2.offsetTop+obj2.offsetHeight;
+			var l2=obj2.offsetLeft;
+			var r2=obj2.offsetLeft+obj2.offsetWidth;
+			
+			if(r1<l2 || l1>r2 || t1>b2 || b1<t2)
+			{
+				return false;	
+			}
+			else
+			{
+				return true;
+			}	
+		};
+		
+		function findNearest(obj)
+		{
+			var iMin=9999999;
+			var iMinIndex=-1;
+			
+			for(var i=0;i<aBtn.length;i++)
+			{
+				if(obj==aBtn[i])continue;	
+				
+				if(collTest(obj,aBtn[i]))
+				{
+					var d=getDis(obj, aBtn[i]);
+				
+					if(d<iMin)
+					{
+						iMin=d;
+						iMinIndex=i;
+					}	
+				};
+			};
+			
+			if(iMinIndex==-1)
+			{
+				return null;
+			}
+			else
+			{
+				return aBtn[iMinIndex];
+			}
+		};
+		//算距离
+		function getDis(obj1,obj2)
+		{
+			var a=obj1.offsetLeft-obj2.offsetLeft;
+			var b=obj1.offsetTop-obj2.offsetTop;
+			
+			return Math.sqrt(a*a+b*b);
+		};
+		
+	})();
+	
+	(function()
+	{
+		var oDiv=document.getElementById('contentWrap');
+		var aLi=getByClass(oDiv,'contentContent')[0].getElementsByTagName('li');
+		//var oZz=document.getElementById('zzc');
+		//事件委托失败
+		/*var oSrDiv=getByClass(oDiv,'contentContent')[0];
+		
+		oSrDiv.onclick=function(ev)
+		{
+			var oEvent=ev||event;
+			var target = oEvent.target || oEvent.srcElement;
+			if(target.nodeName.toLowerCase() == 'img')
+			{
+				//alert('1');
+				clickShow(target,oShoot,oZz);
+			}
+		}*/
+		var oShoot=document.getElementById('shoot');
+		for(var i=0;i<aLi.length;i++)
+		{
+			(function(index)
+			{
+				aLi[i].onmouseup=function()
+				{
+					//alert(index);
+					clickShow(this,oShoot,oZz);
+				}	
+			})(i);	
+		}
+		
+		var oClose=getByClass(oShoot,'shoot_close')[0];
+		closeLogin(oClose,oShoot,oZz);
+		
+		
+		//创建弹出层
+		/*function createShoot()
+		{
+			var oNewDiv=document.createElement('div');
+			oNewDiv.className='shoot';
+			oNewDiv.innerHTML='<div class="shoot_close"><a href="javascript:;"></a></div>'
+			document.body.appendChild(oNewDiv);	
+		}*/	
+	})();
+	
+}
+
+
+
+</script>
+</head>
+
+<body>
+<!--按钮弹出层-->
+<div class="shoot" id="shoot">
+	<div class="shoot_close"><a href="javascript:;"></a></div>
+    <div class="shoot_content"></div>
+</div>
+<div class="zzc" id='zzc'></div>
+<div class="background">
+	<img src="img/blue_glow.jpg" />
+</div>
+<!--聊天窗口-->
+<div class="talk" id='talk'>
+	<div class="talkMove"></div>
+	<div class="userList">
+    	<div class="userListBox">
+        	<div class="up">↑</div>
+            <div class="scorllWhell">
+            	<div class="scorllWhellDelta"></div>
+            </div>
+            <div class="down">↓</div>
+        </div>
+    	<ul class="userNameListBox">
+        	<li>
+            	<span class="headerPic"><img src="images/4.jpg" /></span>
+                <div class="userNameList">daniqwoehi</div>
+                <div class="MySelect">
+                	<a href="javascript:;" class="addF">加好友</a>
+                    <a href="javascript:;" charset="delF">删除好友</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+	<div class="talk_title">
+    	<div class="talk_header"><img src="images/4.jpg" /></div>
+        <span class="talk_close"></span>
+    </div>
+    <div class="talkBox">
+    	<div class="scorllBox">
+        	<div class="up">↑</div>
+            <div class="scorllWhell">
+            	<div class="scorllWhellDelta"></div>
+            </div>
+            <div class="down">↓</div>
+        </div>
+        <ul class="talk_content">
+            
+        </ul>
+    </div>
+    <div class="talk_workBox">
+   		<div class="fonts"></div>
+        <div class="fuckpic"></div>
+        <div class="zxlb">在线列表</div>
+    </div>
+    <div class="inputBox">
+    	<textarea class="inText"></textarea>
+    </div>
+    <div class="tackBtn">
+    	<input type="button" class="tack_button">
+    </div>
+</div>
+<!--登陆框-->
+<div class="login" id='login'>
+	<div class="loginMove"></div>
+	<div class="loginTop">
+    	<span class="login_close"></span>
+    </div>
+    <div class="loginContent">
+    	<span class="LoginIco"></span>
+        <div class="loginform">
+        	<form action="" method="get">
+            <div class="loginWarp">
+            	<span class="userName"></span>
+                <input type="text" value="Athenawyc" id='qqLoginText'>
+            </div>
+            <div class="loginWarp">
+                <span class="passWord"></span>
+                <input type="password" id='qqPassWord'>
+            </div>
+            <div class="loginform_btn">
+            	<input type="button" id='qqlogin_btn'>
+                <input type="button" id='qqzhuce_btn'>
+            </div>    
+            </form>
+        </div>
+    </div>
+    <div class="loginFoot"></div>
+</div>
+
+<!--QQ应用-->
+<div class="useWrap" id='useWrap'>
+    <div class="qqLoginIco" id='login_btn'>
+    	<a href="javascript:;">
+        	<img src="img/qqbj1.png" />
+        </a>
+        <span></span>
+    </div>
+    <div class="wangPanIco">
+    	<a href="javascript:;">
+        	<img src="img/diskexplorer.png" />
+        </a>
+        <span></span>
+    </div>
+    <div class="weiBoIco">
+    	<a href="javascript:;">
+        	<img src="img/big(3).png" />
+        </a>
+        <span></span>
+    </div>
+    <div class="qqKongJianIco">
+    	<a href="javascript:;">
+        	<img src="img/big(1).png" />
+        </a>
+        <span></span>
+    </div>
+</div>
+<div class="pageWrap"></div>
+<div class="ContentWrap" id='contentWrap'>
+	<ul class="contenttitle">
+    	<li class="pic"><img src="img/avatar.png" width="28px" /></li>
+    	<li class="active">1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li class="canlder"></li>
+        <li class="sreach"></li>
+    </ul>
+	<div class="contentContent">
+    	<div class="contentMove">
+            <div style="opacity:1; filter:alpha(opacity=100);">
+                <ul class="activeWrap" id='fuck'>
+                    <li><span class="showBackground"></span><img src="img/big(1).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(3).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(4).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(5).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(7).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                </ul>
+            </div>
+             <div>
+                <ul class="activeWrap" id='fuck'>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(7).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(5).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(5).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(7).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                </ul>
+            </div>
+             <div>
+                <ul class="activeWrap" id='fuck'>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(4).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                </ul>
+            </div>
+             <div>
+                <ul class="activeWrap" id='fuck'>
+                    <li><span class="showBackground"></span><img src="img/big(1).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(5).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                </ul>
+            </div>
+             <div>
+                <ul class="activeWrap" id='fuck'>
+                    <li><span class="showBackground"></span><img src="img/big(1).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(2).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(6).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(8).png"><h4>标题是什么</h4></li>
+                    <li><span class="showBackground"></span><img src="img/big(9).png"><h4>标题是什么</h4></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

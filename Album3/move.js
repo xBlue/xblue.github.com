@@ -1,6 +1,16 @@
 var lastTime=null;
 
-
+function getStyle(obj, name)
+{
+	if(obj.currentStyle)
+	{
+		return obj.currentStyle[name];
+	}
+	else
+	{
+		return getComputedStyle(obj, false)[name];
+	}
+}
 function startMove(obj,json,fn)
 {
   clearInterval(obj.timer);
