@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<link rel="stylesheet" type="text/css" href="style/index.css" />
+<script src="js/common.js"></script>
+<script>
+function time2date(t)
+{
+	var oDate=new Date();
+	
+	oDate.setTime(t*1000);
+	
+	return oDate.getFullYear()+'-'+(oDate.getMonth()+1)+'-'+oDate.getDate()+' '+oDate.getHours()+':'+oDate.getMinutes();
+};
+function add(json)
+{	
+	if(json.err)
+	{
+		alert('错误:'+json.msg);	
+	}
+	else
+	{
+		alert('创建失败，可能是没有连接上服务器 ');	
+	}
+};
+function login(json)
+{
+	if(json.err)
+	{
+		alert('错误:'+json.msg);
+	}
+	else
+	{
+	//判断登录后才开启的聊天内页
+		var oDiv=document.getElementById('talk');
+		var oZzc=document.getElementById('zzc');
+		var oC=document.getElementById('login');
+		oDiv.style.display='block';
+		oC.style.display='none';
+		oZzc.style.display='none';	
+	}
+	
+};
+window.onload=function()
+{
+	//注册和登录拖动
+	var aLogin=getByClass(document, 'login')[0];
+	var aClear=aLogin.children[0];
+	
+	aClear.onmousedown=function (ev)
+	{
+		var oEvent=ev||event;
+		
+		//1.距离
+		var disX=oEvent.clientX-aLogin.offsetLeft;
+		var disY=oEvent.clientY-aLogin.offsetTop;
+		
+		function fnMove(ev)
+		{
+			//2.算位置
+			var oEvent=ev||event;
+			
+			aLogin.style.left=oEvent.clientX-disX+'px';
+			aLogin.style.top=oEvent.clientY-disY+'px';
+		}
+		
+		function fnUp()
+		{
+			//3.清掉
+			this.onmousemove=null;
+			this.onmouseup=null;
+			
+			if(aLogin.releaseCapture)
+			{
+				aLogin.releaseCapture();
+			}
+		}
+		
+		if(aLogin.setCapture)
+		{
+			aLogin.onmousemove=fnMove;
+			aLogin.onmouseup=fnUp;
+			
+			aLogin.setCapture();
+		}
+		else
+		{
+			document.onmousemove=fnMove;
+			document.onmouseup=fnUp;
+		}
+		
+		return false;
+	};		
+};
+</script>
+</head>
+
+<body>
+<div class="login">
+	<div class="clear"></div>
+    <div class="fbox">
+        <ul>
+            <li class="textbox">
+                <strong style="line-height:45px;">账号：</strong>
+                <label for="user"><input placeholder="请输入用户名！" id="user" class="text" name="user" type="text" /></label>
+            </li>
+            <li class="textbox">
+                <strong style="line-height:45px;">密码：</strong>
+                <label for="pass"><input placeholder="请输入密码！" name="密码" id="pass" class="text" type="password" /></label>
+            </li>
+        </ul>
+        <input id="lobtn" class="lobtn" value="登录" type="submit" />
+        <input id="addbtn" class="addbtn" value="注册" type="submit" />
+    </div>
+</div>
+</body>
+</html>

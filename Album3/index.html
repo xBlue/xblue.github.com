@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>横向视差滚动</title>
+<style>
+* {margin:0;padding:0}
+img {border:none}
+ul,ol,li {list-style:none}
+body {background:#000}
+
+#wrap {width:100%;height:420px;position:absolute;margin-top:-210px;top:50%;overflow:hidden}
+#bg {width:100%;height:420px;overflow:hidden}
+#bg  div {width:100%;height:420px;position:absolute}
+.bg1 {background:url(img/2.png) repeat-x;z-index:1;left:0}
+.bg2 {background:url(img/1.png) repeat-x 0 0;z-index:2;left:0}
+.bg3 {background:url(img/3.png) repeat-x 70px 20px;z-index:3;left:0}
+
+#roll_wrap {position:absolute;top:0;left:0;width:100%;height:420px;z-index:4;overflow:hidden}
+#roll_wrap ul {position:absolute;left:0;top:0;width:100%}
+#roll_wrap ul li {width:100%;height:420px;float:left}
+#roll_wrap ul li .big {width:759px;height:280px;position:relative;margin:0 auto;margin-top:-140px;top:50%;border:8px solid transparent;border-radius:5px;box-shadow:0 0 7px #222}
+
+#list_wrap {width:759px;height:280px;position:relative;margin:0 auto;bottom:100px;z-index:5;text-align:center}
+#list_wrap ul li {width:95px;height:65px;box-shadow:0 0 7px #222;border-radius:1px;border:2px solid transparent;display:inline-block;background:rgba(255,255,255,.3);padding:2px 2px;*float:left;*margin-left:20px}
+</style>
+<script type="text/javascript" src="move.js"></script>
+</head>
+
+<body>
+  <div id="wrap">
+    <div id="bg">
+      <div class="bg1" style="z-index:1"></div>
+      <div class="bg2" style="z-index:2"></div>
+      <div class="bg3" style="z-index:3"></div>
+    </div>
+    <div id="list_wrap">
+      <ul>
+        <li><a href="javascript:;"><img src="img/5.jpg" width="95" height="65"></a></li>
+        <li><a href="javascript:;"><img src="img/5.jpg" width="95" height="65"></a></li>
+        <li><a href="javascript:;"><img src="img/5.jpg" width="95" height="65"></a></li>
+        <li><a href="javascript:;"><img src="img/5.jpg" width="95" height="65"></a></li>
+        <li><a href="javascript:;"><img src="img/5.jpg" width="95" height="65"></a></li>
+        <li><a href="javascript:;"><img src="img/5.jpg" width="95" height="65"></a></li>
+      </ul>
+    </div>
+    <div id="roll_wrap">
+      <ul>
+        <li>
+          <div class="big"><a href="javascript:;"><img src="img/5.jpg" width="759" height="280"></a></div>
+        </li>
+        <li>
+          <div class="big"><a href="javascript:;"><img src="img/5.jpg" width="759" height="280"></a></div>
+        </li>
+        <li>
+          <div class="big"><a href="javascript:;"><img src="img/5.jpg" width="759" height="280"></a></div>
+        </li>
+        <li>
+          <div class="big"><a href="javascript:;"><img src="img/5.jpg" width="759" height="280"></a></div>
+        </li>
+        <li>
+          <div class="big"><a href="javascript:;"><img src="img/5.jpg" width="759" height="280"></a></div>
+        </li>
+        <li>
+          <div class="big"><a href="javascript:;"><img src="img/5.jpg" width="759" height="280"></a></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+<script>
+function rnd(m,n)
+{
+  return parseInt(Math.random()*((m+1)-n)+n);
+}
+
+window.onload=function()
+{
+   var oRollWrap=document.getElementById("roll_wrap");
+   
+   var oBg=document.getElementById("bg");
+   
+   var oList=document.getElementById("list_wrap");
+   
+   var aBg=oBg.getElementsByTagName('div');
+   
+   var oUl=oRollWrap.children[0];
+   
+   var aLi=oRollWrap.getElementsByTagName("li");
+   
+   var aList=oList.getElementsByTagName("li");
+   
+   var num=aLi.length;
+   
+   var numBg=aBg.length;
+   
+   var numList=aList.length;
+   
+   var iNow=0;
+   
+   foc();
+   
+   window.onresize=foc;
+   
+   function foc()
+   {   //初始设置
+       var w_w=document.documentElement.clientWidth;
+
+	   var sumWidth=w_w*num;
+	   
+	   oUl.style.width=oBg.style.width=sumWidth+'px';
+	   
+	   for (var i=0;i<num;i++)
+	   {
+		  aLi[i].style.width=w_w+'px';
+	   }
+	   
+	   for (var i=0;i<numBg;i++)
+	   {
+	      aBg[i].style.width=sumWidth+'px';
+	   }
+	   
+	   for (var i=0;i<numList;i++)
+	   {
+	      aList[i].style.MozTransform='rotate('+rnd(20,-20)+'deg)';
+		  aList[i].style.webkitTransform='rotate('+rnd(20,-20)+'deg)';
+		  
+		  (function(index){
+		  
+		     aList[i].onclick=function()
+			 {
+			    iNow=index;
+			    move(iNow);
+			 }
+		  
+		  })(i)
+	   }
+	   
+	   
+	   //运动
+	   function move(iNow)
+	   {
+	      startMove(oUl,{left:-iNow*w_w});
+		  
+		  for (var i=0;i<numBg;i++)
+	      {  
+		     startMove(aBg[i],{left:-(w_w/10)*(aBg[i].style.zIndex)*iNow})
+	      }
+	   }
+   }
+   
+   
+}
+</script>
+</body>
+</html>
+
+

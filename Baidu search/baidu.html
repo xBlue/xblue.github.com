@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* {margin:0; padding:0;}
+
+#div1 {width:420px; margin:50px auto;}
+
+#txt1 {width:418px; height:20px;}
+#ul1 {width:418px; border:1px solid #817F82;margin-top:10px;display:none;}
+#ul1 li {font-size:14px; padding:6px 8px; list-style:none;width:402px;height:20px;}
+#ul1 .active{background:#000;color:#fff;}
+
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>智能课堂 —— 百度JSONp接口测试</title>
+<script>
+function succ(json)
+{
+	var oTxt=document.getElementById('txt1');
+	var oUl=document.getElementById('ul1');
+	var now=0;
+	var n=oTxt.value;
+	oUl.innerHTML='';
+	for(var a=0;a<json.s.length;a++)
+	{
+		var oLi=document.createElement('li');
+		oLi.innerHTML=json.s[a];		
+		oUl.appendChild(oLi);
+		//oUl.children[0].className='active';
+	}
+	
+	//鼠标点击
+	 var aLi=oUl.children;
+	 for(var o=0;o<aLi.length;o++)	
+	 {
+		aLi[o].index=o;
+		aLi[o].onclick=function ()
+		{
+			//alert('a');
+			//oTxt.value='';
+			oTxt.value=this.innerHTML;
+			oUl.style.display='none';
+		};
+		
+	//onmouseover
+		aLi[o].onmouseover=function ()
+		{
+			for(var o=0;o<aLi.length;o++)
+			{
+				aLi[o].className='';
+			}
+			this.className='active';
+			oTxt.value=this.innerHTML;
+			now=index;
+		}
+	
+	
+	//onmouseout
+		aLi[o].onmouseout=function ()
+		{
+			this.className='';
+		}
+		
+		
+		
+	//键盘按下
+
+
+	
+	
+		oTxt.onkeyup=function (ev)
+		{
+			
+			var oEvent=ev||event;
+			switch(oEvent.keyCode)
+			{
+					case 38:
+						for(var i=0;i<aLi.length;i++)
+						{
+							aLi[i].className='';
+						}
+						aLi[now].className='active';
+						now--;
+						oTxt.value=this.innerHTML;
+						if(now<0)
+						{
+							now=aLi.length-1;	
+						}
+						break;
+					case 40:
+						for(var i=0;i<aLi.length;i++)
+						{
+							aLi[i].className='';
+						}
+						aLi[now].className='active';
+						oTxt.value=aLi[now].innerHTML;
+						now++;
+						
+						if(now>aLi.length-1)
+						{
+							now=0;	
+						}						
+						break;	
+					case 13:
+
+						//oTxt.value=aLi[now-1].innerHTML;
+						//oUl.style.display='none';
+						break;
+											
+			}	
+		};
+	 }		
+	oUl.style.display='block';
+	if(oUl.children.length==0)
+	{
+		oUl.style.display='none';
+	}	
+	
+	oTxt.onblur=function ()
+	{
+		oUl.style.display='none';
+	};
+}
+
+
+window.onload=function ()
+{
+	var oTxt=document.getElementById('txt1');
+	var oUl=document.getElementById('ul1');
+	var oS=null;
+	oTxt.onkeyup=function ()
+	{
+		
+		
+		
+		var url='http://suggestion.baidu.com/su?wd='+this.value+'&cb=succ&t='+Math.random();
+		
+		
+		if(oS)
+		{
+			document.body.removeChild(oS);
+		}
+		oS=document.createElement('script');
+		oS.src=url;
+		document.body.appendChild(oS);
+		
+	};	
+	
+	
+};
+
+</script>
+</head>
+
+<body>
+<div id="div1">
+	<input id="txt1" type="text" />
+    <ul id="ul1"></ul>
+</div>
+</body>
+</html>
